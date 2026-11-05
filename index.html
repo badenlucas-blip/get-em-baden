@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Get 'Em: Baden</title>
+<meta name="description" content="Get 'Em: Baden - an original pocket monster-catching RPG set in Melbourne's Docklands.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Get Em Baden">
+<meta name="application-name" content="Get Em Baden">
+<meta name="theme-color" content="#1d2a1d">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#1d2a1d;overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-text-size-adjust:100%}
+body{position:fixed;inset:0;font-family:ui-monospace,Menlo,Consolas,monospace}
+#app{position:absolute;inset:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);display:flex;justify-content:center}
+#shell{width:100%;max-width:520px;height:100%;background:linear-gradient(#cfcbc2,#bdb8ad);border-radius:0 0 28px 28px;display:flex;flex-direction:column;align-items:center;padding:10px 8px 10px;position:relative}
+@media (min-width:560px){#shell{border-radius:16px 16px 60px 16px;margin:10px 0;height:calc(100% - 20px)}}
+#bezel{background:#5c5f6e;border-radius:10px 10px 36px 10px;padding:10px 14px 8px;display:flex;flex-direction:column;align-items:center;box-shadow:inset 0 2px 6px #0006}
+#screen{display:block;image-rendering:pixelated;image-rendering:crisp-edges;background:#9bbc0f;width:320px;height:288px}
+#bezel .lbl{color:#c9c6d6;font-size:10px;letter-spacing:1px;margin-top:6px;font-style:italic}
+#brand{margin:8px 0 2px;color:#2b3990;font-weight:bold;font-style:italic;font-size:15px;letter-spacing:1px;align-self:flex-start;padding-left:6px}
+#brand small{font-size:10px;color:#4a6b2a}
+#controls{flex:1;width:100%;display:flex;justify-content:space-between;align-items:center;padding:0 6px;min-height:150px}
+#dpad{width:min(40vw,150px);height:min(40vw,150px);position:relative;touch-action:none}
+#dpad .h,#dpad .v{position:absolute;background:#2b2b2f;border-radius:6px;box-shadow:0 3px 0 #111}
+#dpad .h{left:0;right:0;top:34%;height:32%}#dpad .v{top:0;bottom:0;left:34%;width:32%}
+#dpad .c{position:absolute;left:44%;top:44%;width:12%;height:12%;border-radius:50%;background:#3d3d42}
+#dpad[data-dir=up] .v{background:linear-gradient(#111 0 34%,#2b2b2f 34%)}#dpad[data-dir=down] .v{background:linear-gradient(#2b2b2f 66%,#111 66%)}
+#dpad[data-dir=left] .h{background:linear-gradient(90deg,#111 0 34%,#2b2b2f 34%)}#dpad[data-dir=right] .h{background:linear-gradient(90deg,#2b2b2f 66%,#111 66%)}
+#ab{display:flex;gap:14px;transform:rotate(-22deg);margin-right:4px}
+.btn{border:none;padding:0;font:inherit;touch-action:none}
+.round{width:min(17vw,66px);height:min(17vw,66px);border-radius:50%;background:#9a2257;color:#3b0f22;font-weight:bold;font-size:18px;box-shadow:0 4px 0 #5a1233;display:flex;align-items:center;justify-content:center}
+#ab .round:first-child{margin-top:34px}
+.round.on,.pill.on{transform:translateY(3px);box-shadow:0 1px 0 #5a1233;filter:brightness(.85)}
+#startsel{display:flex;gap:26px;margin:4px 0 calc(6px + env(safe-area-inset-bottom)*0)}
+.pill{width:74px;height:22px;border-radius:12px;background:#77787e;color:#2b2b2f;font-size:9px;font-weight:bold;letter-spacing:1px;transform:rotate(-22deg);box-shadow:0 3px 0 #4a4b50}
+.pill.on{box-shadow:0 1px 0 #4a4b50}
+#io{position:fixed;inset:0;z-index:9;background:#0f380fee;display:none;flex-direction:column;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top)) 18px 20px;color:#9bbc0f;font-size:14px;touch-action:auto;-webkit-user-select:text;user-select:text}
+#io.show{display:flex}#io p{max-width:420px;text-align:center;margin:0 0 10px}
+#io textarea{width:100%;max-width:420px;height:38vh;font:12px ui-monospace,monospace;background:#9bbc0f;color:#0f380f;border:3px solid #306230;border-radius:6px;padding:8px;-webkit-user-select:text;user-select:text}
+#io .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+#io button,#io label{font:bold 14px ui-monospace,monospace;background:#9bbc0f;color:#0f380f;border:none;border-radius:8px;padding:12px 16px}
+#hint{position:absolute;bottom:2px;right:10px;font-size:8px;color:#8a867c}
+@media (hover:none){#hint{display:none}}
+</style>
+</head>
+<body>
+<div id="app"><div id="shell">
+  <div id="bezel"><canvas id="screen" width="160" height="144"></canvas><div class="lbl">4-SHADE BEAST-O-VISION</div></div>
+  <div id="brand">GET 'EM: BADEN <small>GREEN VERSION</small></div>
+  <div id="controls">
+    <div id="dpad" aria-label="D-pad"><div class="h"></div><div class="v"></div><div class="c"></div></div>
+    <div id="ab"><button class="btn round" data-k="b" aria-label="B">B</button><button class="btn round" data-k="a" aria-label="A">A</button></div>
+  </div>
+  <div id="startsel"><button class="btn pill" data-k="mute" id="mute">SOUND ON</button><button class="btn pill" data-k="start">START</button></div>
+  <div id="hint">Keys: arrows/WASD, Z=A, X=B, Enter=Start, M=mute</div>
+</div></div>
+<div id="io"><p id="ioMsg"></p><textarea id="ioText" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea><div class="row"><button id="ioCopy">COPY</button><button id="ioFile">SAVE FILE</button><label id="ioPickL">CHOOSE FILE<input id="ioPick" type="file" accept=".txt,.json,text/plain,application/json" hidden></label><button id="ioLoad">LOAD IT</button><button id="ioClose">CLOSE</button></div></div>
+<script>
+"use strict";
+// ---- 00_font.js ----
+// Original 5x8 pixel font for GET 'EM: BADEN (hand-drawn). Rows top->bottom, '1' = ink.
+const GLYPHS = {
+'A':'01110 10001 10001 11111 10001 10001 10001',
+'B':'11110 10001 10001 11110 10001 10001 11110',
+'C':'01110 10001 10000 10000 10000 10001 01110',
+'D':'11100 10010 10001 10001 10001 10010 11100',
+'E':'11111 10000 10000 11110 10000 10000 11111',
+'F':'11111 10000 10000 11110 10000 10000 10000',
+'G':'01110 10001 10000 10111 10001 10001 01111',
+'H':'10001 10001 10001 11111 10001 10001 10001',
+'I':'01110 00100 00100 00100 00100 00100 01110',
+'J':'00111 00010 00010 00010 00010 10010 01100',
+'K':'10001 10010 10100 11000 10100 10010 10001',
+'L':'10000 10000 10000 10000 10000 10000 11111',
+'M':'10001 11011 10101 10101 10001 10001 10001',
+'N':'10001 10001 11001 10101 10011 10001 10001',
+'O':'01110 10001 10001 10001 10001 10001 01110',
+'P':'11110 10001 10001 11110 10000 10000 10000',
+'Q':'01110 10001 10001 10001 10101 10010 01101',
+'R':'11110 10001 10001 11110 10100 10010 10001',
+'S':'01111 10000 10000 01110 00001 00001 11110',
+'T':'11111 00100 00100 00100 00100 00100 00100',
+'U':'10001 10001 10001 10001 10001 10001 01110',
+'V':'10001 10001 10001 10001 10001 01010 00100',
+'W':'10001 10001 10001 10101 10101 10101 01010',
+'X':'10001 10001 01010 00100 01010 10001 10001',
+'Y':'10001 10001 01010 00100 00100 00100 00100',
+'Z':'11111 00001 00010 00100 01000 10000 11111',
+'a':'00000 00000 01110 00001 01111 10001 01111',
+'b':'10000 10000 10110 11001 10001 10001 11110',
+'c':'00000 00000 01110 10000 10000 10001 01110',
+'d':'00001 00001 01101 10011 10001 10001 01111',
+'e':'00000 00000 01110 10001 11111 10000 01110',
+'f':'00110 01001 01000 11100 01000 01000 01000',
+'g':'00000 00000 01111 10001 10001 01111 00001 01110',
+'h':'10000 10000 10110 11001 10001 10001 10001',
+'i':'00100 00000 01100 00100 00100 00100 01110',
+'j':'00010 00000 00110 00010 00010 00010 10010 01100',
+'k':'10000 10000 10010 10100 11000 10100 10010',
+'l':'01100 00100 00100 00100 00100 00100 01110',
+'m':'00000 00000 11010 10101 10101 10101 10101',
+'n':'00000 00000 10110 11001 10001 10001 10001',
+'o':'00000 00000 01110 10001 10001 10001 01110',
+'p':'00000 00000 11110 10001 10001 11110 10000 10000',
+'q':'00000 00000 01111 10001 10001 01111 00001 00001',
+'r':'00000 00000 10110 11001 10000 10000 10000',
+'s':'00000 00000 01111 10000 01110 00001 11110',
+'t':'01000 01000 11100 01000 01000 01001 00110',
+'u':'00000 00000 10001 10001 10001 10011 01101',
+'v':'00000 00000 10001 10001 10001 01010 00100',
+'w':'00000 00000 10001 10001 10101 10101 01010',
+'x':'00000 00000 10001 01010 00100 01010 10001',
+'y':'00000 00000 10001 10001 10001 01111 00001 01110',
+'z':'00000 00000 11111 00010 00100 01000 11111',
+'0':'01110 10001 10011 10101 11001 10001 01110',
+'1':'00100 01100 00100 00100 00100 00100 01110',
+'2':'01110 10001 00001 00010 00100 01000 11111',
+'3':'11111 00010 00100 00010 00001 10001 01110',
+'4':'00010 00110 01010 10010 11111 00010 00010',
+'5':'11111 10000 11110 00001 00001 10001 01110',
+'6':'00110 01000 10000 11110 10001 10001 01110',
+'7':'11111 00001 00010 00100 01000 01000 01000',
+'8':'01110 10001 10001 01110 10001 10001 01110',
+'9':'01110 10001 10001 01111 00001 00010 01100',
+'.':'00000 00000 00000 00000 00000 01100 01100',
+',':'00000 00000 00000 00000 01100 01100 00100 01000',
+'!':'00100 00100 00100 00100 00100 00000 00100',
+'?':'01110 10001 00001 00010 00100 00000 00100',
+"'":'00100 00100 01000 00000 00000 00000 00000',
+'"':'01010 01010 00000 00000 00000 00000 00000',
+'-':'00000 00000 00000 01110 00000 00000 00000',
+':':'00000 01100 01100 00000 01100 01100 00000',
+'/':'00001 00010 00010 00100 01000 01000 10000',
+'(':'00010 00100 01000 01000 01000 00100 00010',
+')':'01000 00100 00010 00010 00010 00100 01000',
+'&':'01100 10010 10100 01000 10101 10010 01101',
+'%':'11001 11010 00010 00100 01000 01011 10011',
+'+':'00000 00100 00100 11111 00100 00100 00000',
+'$':'00100 01111 10100 01110 00101 11110 00100',
+'#':'01010 11111 01010 01010 11111 01010 00000',
+'*':'00000 10101 01110 11111 01110 10101 00000',
+'=':'00000 00000 11111 00000 11111 00000 00000',
+'>':'11000 11100 11110 11111 11110 11100 11000', // cursor ▶
+'<':'00000 00100 01100 11100 01100 00100 00000',
+'v':'00000 00000 10001 10001 10001 01010 00100',
+'~':'00000 00000 11111 11111 01110 00100 00000', // ▼ prompt
+'^':'00000 01010 01010 00000 10001 01110 00000', // happy face
+'@':'01110 10001 10111 10101 10111 10000 01110',
+'_':'00000 00000 00000 00000 00000 00000 11111',
+'|':'00000 11111 11111 11111 11111 11111 00000', // filled box (empty-cursor)
+'`':'11000 10100 10010 10001 10010 10100 11000', // hollow cursor ▷
+};
+// 'v' is reused as lowercase v; prompt glyph is '~'.
+// glyph cache: GLYPHS -> row bitmaps
+const FONT = {};
+for (const k in GLYPHS) FONT[k] = GLYPHS[k].split(' ').map(r => r.split('').map(Number));
+
+// ---- 10_gfx.js ----
+// ===== Graphics core: palette, pixel buffers, text =====
+const SW = 160, SH = 144, TS = 16;
+const PAL = ['#9bbc0f', '#8bac0f', '#306230', '#0f380f'];
+const PAL_RGB = PAL.map(h => [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16)));
+
+// Indexed pixel buffer (-1 = transparent). All art is drawn procedurally into these.
+class Buf {
+  constructor(w, h) { this.w = w; this.h = h; this.d = new Int8Array(w * h).fill(-1); }
+  set(x, y, c) { x = Math.floor(x); y = Math.floor(y); if (x >= 0 && y >= 0 && x < this.w && y < this.h) this.d[y * this.w + x] = c; }
+  get(x, y) { return (x < 0 || y < 0 || x >= this.w || y >= this.h) ? -1 : this.d[y * this.w + x]; }
+  fill(c) { this.d.fill(c); return this; }
+  rect(x, y, w, h, c) { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) this.set(x + i, y + j, c); return this; }
+  ell(cx, cy, rx, ry, c) {
+    for (let y = Math.floor(cy - ry - 1); y <= cy + ry + 1; y++) for (let x = Math.floor(cx - rx - 1); x <= cx + rx + 1; x++) {
+      const dx = (x + .5 - cx) / rx, dy = (y + .5 - cy) / ry; if (dx * dx + dy * dy <= 1) this.set(x, y, c);
+    } return this;
+  }
+  poly(pts, c) { // even-odd fill, pixel centres
+    let minY = Infinity, maxY = -Infinity, minX = Infinity, maxX = -Infinity;
+    for (const [x, y] of pts) { minY = Math.min(minY, y); maxY = Math.max(maxY, y); minX = Math.min(minX, x); maxX = Math.max(maxX, x); }
+    for (let y = Math.floor(minY); y <= maxY; y++) for (let x = Math.floor(minX); x <= maxX; x++) {
+      const px = x + .5, py = y + .5; let ins = false;
+      for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        const [xi, yi] = pts[i], [xj, yj] = pts[j];
+        if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) ins = !ins;
+      }
+      if (ins) this.set(x, y, c);
+    } return this;
+  }
+  line(x0, y0, x1, y1, c, t = 1) {
+    const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1);
+    for (let i = 0; i <= n; i++) { const x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n; if (t > 1) this.rect(Math.round(x - t / 2), Math.round(y - t / 2), t, t, c); else this.set(Math.round(x), Math.round(y), c); }
+    return this;
+  }
+  pat(x, y, rows, map) { // draw string pattern; map: char->shade
+    rows.forEach((r, j) => [...r].forEach((ch, i) => { const c = map ? map[ch] : (ch >= '0' && ch <= '3' ? +ch : undefined); if (c !== undefined) this.set(x + i, y + j, c); }));
+    return this;
+  }
+  outline(c = 3) {
+    const src = this.d.slice();
+    for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
+      if (src[y * this.w + x] !== -1) continue;
+      const n = (xx, yy) => xx >= 0 && yy >= 0 && xx < this.w && yy < this.h && src[yy * this.w + xx] !== -1;
+      if (n(x - 1, y) || n(x + 1, y) || n(x, y - 1) || n(x, y + 1)) this.d[y * this.w + x] = c;
+    } return this;
+  }
+  over(b, ox = 0, oy = 0) { for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const c = b.d[y * b.w + x]; if (c >= 0) this.set(x + ox, y + oy, c); } return this; }
+  mirror() { const o = new Buf(this.w, this.h); for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) o.d[y * this.w + x] = this.d[y * this.w + (this.w - 1 - x)]; return o; }
+  canvas() {
+    const cv = document.createElement('canvas'); cv.width = this.w; cv.height = this.h;
+    const cx = cv.getContext('2d'), id = cx.createImageData(this.w, this.h);
+    for (let i = 0; i < this.d.length; i++) { const c = this.d[i]; if (c < 0) continue; const [r, g, b] = PAL_RGB[c]; id.data.set([r, g, b, 255], i * 4); }
+    cx.putImageData(id, 0, 0); return cv;
+  }
+}
+
+// ---- Text ----
+const glyphCache = {};
+function glyph(ch, shade) {
+  const key = ch + shade; if (glyphCache[key]) return glyphCache[key];
+  const rows = FONT[ch]; if (!rows) return null;
+  const b = new Buf(5, rows.length); rows.forEach((r, y) => r.forEach((v, x) => v && b.set(x, y, shade)));
+  return glyphCache[key] = b.canvas();
+}
+function text(ctx, s, x, y, shade = 3, scale = 1) {
+  s = String(s); let cx = x;
+  for (const ch of s) {
+    if (ch === '\n') { y += 10 * scale; cx = x; continue; }
+    const g = glyph(ch, shade); if (g) ctx.drawImage(g, cx, y, 5 * scale, g.height * scale);
+    cx += 6 * scale;
+  }
+}
+function wrap(s, width = 24) { // returns array of lines
+  const out = [];
+  for (const para of String(s).split('\n')) {
+    let line = '';
+    for (const w of para.split(' ')) {
+      if (!line.length) line = w; else if ((line + ' ' + w).length <= width) line += ' ' + w; else { out.push(line); line = w; }
+      while (line.length > width) { out.push(line.slice(0, width)); line = line.slice(width); }
+    }
+    out.push(line);
+  }
+  return out;
+}
+function box(ctx, x, y, w, h) { // GB-style double-line frame
+  ctx.fillStyle = PAL[0]; ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = PAL[3]; ctx.fillRect(x + 1, y + 1, w - 2, 1); ctx.fillRect(x + 1, y + h - 2, w - 2, 1); ctx.fillRect(x + 1, y + 1, 1, h - 2); ctx.fillRect(x + w - 2, y + 1, 1, h - 2);
+  ctx.fillStyle = PAL[2]; ctx.fillRect(x + 3, y + 3, w - 6, 1); ctx.fillRect(x + 3, y + h - 4, w - 6, 1); ctx.fillRect(x + 3, y + 3, 1, h - 6); ctx.fillRect(x + w - 4, y + 3, 1, h - 6);
+}
+function hpBar(ctx, x, y, w, frac) {
+  ctx.fillStyle = PAL[3]; ctx.fillRect(x, y, w, 4);
+  ctx.fillStyle = PAL[0]; ctx.fillRect(x + 1, y + 1, w - 2, 2);
+  ctx.fillStyle = frac > .5 ? PAL[1] : frac > .2 ? PAL[2] : PAL[3];
+  ctx.fillStyle = PAL[2]; if (frac < .2) ctx.fillStyle = PAL[3];
+  ctx.fillRect(x + 1, y + 1, Math.max(0, Math.round((w - 2) * frac)), 2);
+}
+
+// ---- 20_art.js ----
+// ===== Procedural pixel art: tiles, characters, monsters, logo =====
+// ---- Tiles (16x16). Each returns one Buf (or array of frames for animated tiles) ----
+function tuft(b, x, y, c = 1) { b.set(x, y, c); b.set(x + 2, y, c); b.set(x + 1, y + 1, c); }
+const groundB = () => { const b = new Buf(16, 16).fill(0); tuft(b, 2, 3); tuft(b, 10, 10); tuft(b, 11, 2); return b; };
+const floorB = () => { const b = new Buf(16, 16).fill(0); b.rect(0, 15, 16, 1, 1); b.rect(15, 0, 1, 16, 1); b.set(7, 7, 1); return b; };
+const waterB = f => { const b = new Buf(16, 16).fill(2); const o = f * 3; [[1, 3], [9, 7], [3, 11], [11, 14]].forEach(([x, y]) => { b.rect((x + o) % 16, y, 4, 1, 1); b.set((x + o + 4) % 16, y - 1, 0); }); return b; };
+function canopy(b) { const t = new Buf(16, 16); t.ell(8, 6.5, 6.5, 6, 2); t.set(5, 4, 1); t.set(6, 3, 1); t.set(10, 6, 1); t.set(7, 8, 1); t.set(4, 7, 1); t.rect(6, 12, 4, 3, 3); t.outline(3); b.over(t); return b; }
+const TILE_ART = {
+  '.': groundB,
+  ',': () => { const b = new Buf(16, 16).fill(1); [[3, 4], [11, 3], [7, 10], [13, 12], [2, 13]].forEach(([x, y]) => b.set(x, y, 0)); b.set(9, 6, 2); b.set(4, 9, 2); return b; },
+  'g': () => new Buf(16, 16).fill(1).pat(0, 0, ["1111111111111111", "1311113113111131", "3231132332311323", "3223322332233223", "2332233223322332", "2232223222322232", "1222222112222221", "1111111111111111", "1111111111111111", "1311113113111131", "3231132332311323", "3223322332233223", "2332233223322332", "2232223222322232", "1222222112222221", "1111111111111111"]),
+  'T': () => canopy(groundB()),
+  '~': () => [waterB(0), waterB(1)],
+  ':': () => { const b = new Buf(16, 16).fill(0); [[2, 2], [9, 4], [5, 9], [13, 11], [11, 14], [1, 13]].forEach(([x, y]) => b.set(x, y, 1)); b.set(7, 13, 2); return b; },
+  'f': () => { const b = groundB(); [[4, 4], [11, 10]].forEach(([x, y]) => { b.set(x - 1, y, 1); b.set(x + 1, y, 1); b.set(x, y - 1, 1); b.set(x, y + 1, 1); b.set(x, y, 3); b.set(x + 1, y + 3, 2); }); return b; },
+  '|': () => { const b = new Buf(16, 16).fill(1); for (let y = 3; y < 16; y += 4) b.rect(0, y, 16, 1, 2); b.rect(0, 0, 1, 16, 3); b.rect(15, 0, 1, 16, 3); b.set(5, 1, 0); b.set(10, 9, 0); return b; },
+  'B': () => { const b = waterB(0); b.rect(0, 0, 4, 16, 1); b.rect(12, 0, 4, 16, 1); b.rect(0, 0, 1, 16, 3); b.rect(15, 0, 1, 16, 3); b.rect(4, 6, 2, 1, 1); return b; },
+  '=': () => { const b = groundB(); b.rect(0, 5, 16, 2, 2); b.rect(0, 10, 16, 2, 2); b.rect(2, 3, 2, 12, 3); b.rect(12, 3, 2, 12, 3); return b; },
+  'S': () => { const b = groundB(); b.rect(7, 10, 2, 6, 3); b.rect(1, 2, 14, 9, 3); b.rect(2, 3, 12, 7, 1); b.rect(4, 5, 8, 1, 2); b.rect(4, 7, 6, 1, 2); return b; },
+  'C': () => { const b = groundB(); b.rect(1, 1, 14, 14, 3); for (let y = 0; y < 6; y++) for (let x = 0; x < 6; x++) b.rect(2 + x * 2, 2 + y * 2, 2, 2, (x + y) % 2 ? 3 : 0); b.set(6, 6, 2); b.set(7, 6, 2); b.set(9, 10, 1); b.set(10, 10, 1); return b; },
+  'E': () => { const b = groundB(); b.rect(4, 1, 8, 14, 3); b.rect(5, 2, 6, 12, 2); b.rect(6, 3, 4, 3, 0); b.pat(7, 7, ["01", "10", "01"], { 0: 2, 1: 0 }); b.line(11, 11, 14, 15, 3); return b; },
+  'R': () => { const b = new Buf(16, 16).fill(2); for (let y = 3; y < 16; y += 4) b.rect(0, y, 16, 1, 3); for (let y = 1; y < 16; y += 4) for (let x = (y % 8 === 1 ? 2 : 6); x < 16; x += 8) b.set(x, y, 1); return b; },
+  'W': () => { const b = new Buf(16, 16).fill(0); for (let y = 3; y < 16; y += 4) b.rect(0, y, 16, 1, 1); for (let y = 0; y < 16; y += 4) for (let x = (y % 8 ? 3 : 11); x < 16; x += 16) b.rect(x, y, 1, 3, 1); return b; },
+  'w': () => { const b = TILE_ART.W(); b.rect(2, 2, 12, 11, 3); b.rect(3, 3, 10, 9, 1); b.rect(7, 3, 2, 9, 2); b.rect(3, 7, 10, 1, 2); b.set(4, 4, 0); b.set(5, 4, 0); b.set(4, 5, 0); return b; },
+  'D': () => { const b = TILE_ART.W(); b.rect(2, 1, 12, 15, 3); b.rect(3, 2, 10, 14, 2); b.rect(4, 3, 8, 5, 1); b.set(10, 10, 0); return b; },
+  '#': () => { const b = new Buf(16, 16).fill(2); b.rect(0, 12, 16, 4, 3); b.rect(0, 11, 16, 1, 1); b.rect(7, 0, 1, 11, 3); return b; },
+  '_': floorB,
+  'X': () => { const b = floorB(); b.rect(1, 3, 14, 10, 2); for (let x = 3; x < 14; x += 3) b.rect(x, 4, 1, 8, 1); return b; },
+  'k': () => { const b = new Buf(16, 16).fill(3); b.rect(1, 1, 14, 14, 2); [4, 9, 14].forEach(y => b.rect(1, y, 14, 1, 3)); for (let x = 2; x < 14; x += 2) { b.rect(x, 1 + (x % 4 ? 0 : 1), 1, 3 - (x % 4 ? 0 : 1), x % 3 ? 0 : 1); b.rect(x, 6, 1, 3, x % 4 ? 1 : 0); } return b; },
+  'b': () => { const b = floorB(); b.rect(1, 0, 14, 16, 3); b.rect(2, 1, 12, 4, 0); b.rect(2, 6, 12, 9, 1); for (let x = 3; x < 14; x += 3) b.rect(x, 8, 1, 6, 2); return b; },
+  't': () => { const b = floorB(); b.rect(0, 2, 16, 12, 3); b.rect(1, 3, 14, 8, 1); b.rect(2, 4, 4, 1, 0); b.rect(1, 11, 14, 2, 2); return b; },
+  'c': () => { const b = new Buf(16, 16).fill(1); b.rect(0, 0, 16, 5, 0); b.rect(0, 5, 16, 1, 3); b.rect(0, 15, 16, 1, 3); for (let x = 3; x < 16; x += 6) b.rect(x, 7, 1, 7, 2); return b; },
+  'P': () => { const b = floorB(); const t = new Buf(16, 16); t.ell(8, 5, 6, 5, 1); t.set(5, 3, 2); t.set(10, 5, 2); t.set(7, 7, 2); t.rect(4, 10, 8, 5, 2); t.rect(4, 10, 8, 1, 0); t.outline(3); return b.over(t); },
+  'F': () => { const b = floorB(); b.rect(2, 0, 12, 16, 3); b.rect(3, 1, 10, 14, 0); b.rect(3, 6, 10, 1, 3); b.rect(11, 2, 1, 3, 2); b.rect(11, 8, 1, 4, 2); return b; },
+  'v': () => { const b = floorB(); b.rect(0, 2, 16, 11, 3); b.rect(2, 4, 12, 7, 1); b.set(3, 5, 0); b.set(4, 5, 0); b.set(3, 6, 0); b.rect(6, 13, 4, 2, 3); return b; },
+  'H': () => { const b = TILE_ART.c(); b.rect(2, 0, 12, 5, 3); [3, 6, 9, 12].forEach(x => b.rect(x, 1, 2, 3, 0)); return b; },
+  'A': () => { const b = floorB(); b.line(3, 15, 5, 9, 3); b.line(12, 15, 10, 9, 3); b.rect(1, 1, 14, 9, 3); b.rect(2, 2, 12, 7, 0); b.rect(3, 3, 6, 1, 2); b.rect(3, 5, 9, 1, 1); b.rect(3, 7, 4, 1, 2); return b; },
+  'G': () => { const b = floorB(); b.ell(8, 13, 4, 2, 3); b.rect(7, 1, 1, 12, 3); b.poly([[8, 1], [14, 3.5], [8, 6]], 2); return b; },
+};
+const SOLID = new Set('T~=SCERWwkbtcPFvHAG#B'.split(''));
+const TILE_CV = {};
+function buildTiles() {
+  for (const k in TILE_ART) { const r = TILE_ART[k](); TILE_CV[k] = (Array.isArray(r) ? r : [r]).map(b => b.canvas()); }
+}
+
+// ---- Characters (16x16, dirs: 0 down,1 up,2 left,3 right; 3 walk frames) ----
+// p: {hair, style:'short'|'long'|'bun'|'pig'|'curly'|'bald', hat, top, legs, suit, dress, kid, shades, wide}
+function charBuf(p, dir, fr) {
+  const b = new Buf(16, 16), k = p.kid ? 2 : 0, side = dir >= 2;
+  const hx = side ? 7 : 8, hy = 5.5 + k, hr = p.kid ? 4.2 : 4.5;
+  // body
+  const bx = side ? 5 : (p.wide ? 3 : 4), bw = side ? 6 : (p.wide ? 10 : 8);
+  b.rect(bx, 10 + k, bw, 4 - k, p.top);
+  if (!side) { b.rect(bx - 1, 10 + k, 1, 3, p.top); b.rect(bx + bw, 10 + k, 1, 3, p.top); b.set(bx - 1, 13, 0); b.set(bx + bw, 13, 0); }
+  else { b.rect(7, 11 + k, 2, 2, p.top === 3 ? 2 : 3); b.set(8, 13, 0); }
+  if (p.suit && dir === 0) { b.set(7, 10 + k, 0); b.set(9, 10 + k, 0); b.rect(8, 10 + k, 1, 3, 3); }
+  if (p.stripe) b.rect(bx, 12, bw, 1, p.stripe);
+  if (p.dress) { b.poly([[bx - 1, 12], [bx + bw + 1, 12], [bx + bw + 2, 15], [bx - 2, 15]], p.dress); }
+  // legs (walk frames)
+  const ll = fr === 1 ? 1 : 2, rl = fr === 2 ? 1 : 2, lg = p.legs ?? 3;
+  if (!p.dress) {
+    if (side) { b.rect(6, 14, 2, fr === 1 ? 1 : 2, lg); b.rect(9, 14, 2, fr === 2 ? 1 : 2, lg); }
+    else { b.rect(5, 14, 3, ll, lg); b.rect(9, 14, 3, rl, lg); }
+  }
+  // head
+  b.ell(hx, hy, hr, hr, 0);
+  const H = p.hair, top = hy - hr;
+  if (p.style !== 'bald') {
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+      if (b.get(x, y) !== 0) continue; const dy = y + .5 - hy, dx = x + .5 - hx;
+      if (dx * dx + dy * dy > hr * hr) continue;
+      let hairPix = dy < -1.5;
+      if (dir === 1) hairPix = dy < 2.5;
+      if (dir === 2) hairPix = hairPix || dx > 1;
+      if (dir === 3) hairPix = hairPix || dx < -1;
+      if (dir === 0 && (Math.abs(dx) > 3.3 && dy < 1)) hairPix = true;
+      if (hairPix) b.set(x, y, H);
+    }
+    if (p.style === 'long') { if (dir === 0 || dir === 1) { b.rect(hx - 5, hy - 1, 2, 6, H); b.rect(hx + 3, hy - 1, 2, 6, H); } else b.rect(dir === 2 ? hx + 2 : hx - 4, hy - 1, 2, 6, H); if (dir === 1) b.rect(hx - 4, hy, 8, 5, H); }
+    if (p.style === 'pig') { b.ell(hx - 5, hy, 1.6, 2, H); b.ell(hx + 5, hy, 1.6, 2, H); }
+    if (p.style === 'bun') b.ell(hx, top - 0.5, 2, 1.6, H);
+    if (p.style === 'curly') { [-4, -2, 0, 2, 4].forEach(o => b.ell(hx + o, top + 1, 1.5, 1.5, H)); }
+  }
+  // face
+  if (dir === 0) { if (p.shades) b.rect(hx - 3, hy, 7, 1, 3); else { b.set(hx - 2, hy, 3); b.set(hx + 2, hy, 3); } if (p.beard) b.rect(hx - 2, hy + 2, 5, 2, p.beard); }
+  if (dir === 2) { b.set(hx - 3, hy, 3); if (p.shades) b.rect(hx - 4, hy, 3, 1, 3); }
+  if (dir === 3) { b.set(hx + 2, hy, 3); if (p.shades) b.rect(hx + 1, hy, 3, 1, 3); }
+  // hats
+  if (p.hat === 'crown') { b.rect(hx - 3, top - 1, 7, 2, 1); b.set(hx - 3, top - 2, 1); b.set(hx, top - 2, 1); b.set(hx + 3, top - 2, 1); b.set(hx, top - 1, 0); }
+  if (p.hat === 'cap') { b.ell(hx, top + 2, hr, 2.6, p.hatc ?? 2); if (dir === 0) b.rect(hx - 4, top + 3, 9, 1, 3); if (dir === 2) b.rect(hx - 6, top + 3, 4, 1, p.hatc ?? 2); if (dir === 3) b.rect(hx + 3, top + 3, 4, 1, p.hatc ?? 2); }
+  if (p.hat === 'chef') { b.rect(hx - 3, top - 3, 7, 5, 0); b.ell(hx, top - 3, 4, 2, 0); }
+  if (p.hat === 'helmet') { b.ell(hx, top + 2.5, hr + .5, 3, p.hatc ?? 0); b.rect(hx - 1, top, 2, 2, 2); }
+  b.outline(3);
+  return b;
+}
+function dogBuf(dir, fr) {
+  const b = new Buf(16, 16);
+  if (dir === 0) {
+    b.ell(8, 12, 5, 3.5, 1); b.ell(8, 12.5, 2.5, 2.5, 0); b.rect(5, 14, 2, fr === 1 ? 1 : 2, 0); b.rect(9, 14, 2, fr === 2 ? 1 : 2, 0);
+    b.ell(8, 6.5, 5, 4.6, 0); b.ell(3.6, 7.5, 2, 3.6, 1); b.ell(12.4, 7.5, 2, 3.6, 1); [[6, 2], [8, 2], [10, 3], [7, 3]].forEach(([x, y]) => b.set(x, y, 1));
+    b.set(6, 6, 3); b.set(10, 6, 3); b.rect(7, 8, 3, 1, 3); b.set(8, 9, 2); b.set(8, 10, 2);
+  } else if (dir === 1) {
+    b.ell(8, 11.5, 5, 4, 1); b.ell(8, 5.5, 4.6, 4.2, 1); b.ell(3.8, 7, 2, 3.4, 1); b.ell(12.2, 7, 2, 3.4, 1); b.ell(8, 15, 1.5, 1.2, 0);
+    [[6, 3], [9, 4], [7, 9], [10, 12]].forEach(([x, y]) => b.set(x, y, 0)); b.rect(5, 14, 2, fr === 1 ? 1 : 2, 1); b.rect(10, 14, 2, fr === 2 ? 1 : 2, 1);
+  } else {
+    b.ell(9.5, 10.5, 5.5, 3.5, 1); b.ell(9.5, 11.5, 3, 1.6, 0); b.ell(14, 7.5, 1.6, 2, 0);
+    b.rect(5, 13, 2, fr === 1 ? 2 : 3, 0); b.rect(11, 13, 2, fr === 2 ? 2 : 3, 0);
+    b.ell(4.5, 7, 3.8, 3.6, 0); b.ell(6.2, 8, 1.8, 3, 1); b.set(3, 6, 3); b.set(0, 8, 3); b.set(1, 8, 3); b.set(4, 3, 1); b.set(2, 4, 1);
+    if (dir === 3) { b.outline(3); return b.mirror(); }
+  }
+  return b.outline(3);
+}
+function itemBuf() { const b = new Buf(16, 16); b.rect(4, 7, 8, 7, 1); b.rect(5, 4, 1, 3, 2); b.rect(10, 4, 1, 3, 2); b.rect(5, 3, 6, 1, 2); b.rect(7, 9, 2, 3, 3); b.set(5, 8, 0); return b.outline(3); }
+
+const CHARS = { // character looks
+  baden: { hair: 3, style: 'short', top: 2, legs: 3, suit: 1 },
+  meredy: { hair: 2, style: 'long', hat: 'crown', top: 0, legs: 2 },
+  glen: { hair: 1, style: 'short', hat: 'crown', top: 2, legs: 2, beard: 1 },
+  bouncer: { hair: 1, style: 'bald', top: 3, legs: 3, wide: 1, shades: 1, suit: 1 },
+  croupier: { hair: 3, style: 'bun', top: 2, legs: 3, suit: 1 },
+  buck: { hair: 3, style: 'short', top: 1, legs: 2, stripe: 2 },
+  lenny: { hair: 3, style: 'short', hat: 'cap', hatc: 1, top: 1, legs: 2, kid: 1 },
+  lucy: { hair: 3, style: 'long', hat: 'crown', top: 2, dress: 2, kid: 1, shades: 1 },
+  gracie: { hair: 2, style: 'pig', hat: 'crown', top: 1, dress: 0, kid: 1 },
+  rose: { hair: 1, style: 'long', top: 1, dress: 1, kid: 1 },
+  vicki: { hair: 1, style: 'curly', top: 0, legs: 1, dress: 0 },
+  man: { hair: 3, style: 'short', top: 1, legs: 2 },
+  woman: { hair: 2, style: 'long', top: 1, dress: 1 },
+  lady: { hair: 0, style: 'bun', top: 1, dress: 2 },
+  cyclist: { hair: 3, hat: 'helmet', hatc: 0, top: 1, legs: 1, stripe: 3, shades: 1 },
+  gymbro: { hair: 3, style: 'short', top: 0, legs: 2, wide: 1 },
+  golfer: { hair: 2, hat: 'cap', hatc: 0, top: 1, legs: 0 },
+  chef: { hair: 2, hat: 'chef', top: 0, legs: 3 },
+  auctioneer: { hair: 1, style: 'bald', top: 2, legs: 3, suit: 1 },
+  tech: { hair: 2, style: 'short', top: 3, legs: 2 },
+  popstar: { hair: 0, style: 'curly', top: 2, dress: 2 },
+  lifeguard: { hair: 1, hat: 'cap', hatc: 0, top: 1, legs: 0, shades: 1 },
+  dev: { hair: 3, hat: 'helmet', hatc: 0, top: 1, legs: 2, stripe: 0 },
+  tradie: { hair: 3, style: 'short', top: 1, legs: 1, beard: 2 },
+};
+const CHAR_CV = {};
+function charFrames(key) {
+  if (CHAR_CV[key]) return CHAR_CV[key];
+  const out = [];
+  for (let d = 0; d < 4; d++) { out[d] = []; for (let f = 0; f < 3; f++) {
+    let b;
+    if (key === 'dog') b = dogBuf(d, f);
+    else if (key === 'item') b = itemBuf();
+    else { const p = CHARS[key]; b = d === 3 ? charBuf(p, 2, f).mirror() : charBuf(p, d, f); }
+    out[d][f] = b.canvas();
+  } }
+  return CHAR_CV[key] = out;
+}
+
+// ---- Monsters (48x48 front sprites; back = mirrored) ----
+const MON_ART = {
+  sizzlesnag(b) { b.poly([[38, 30], [47, 12], [44, 24], [47, 22], [42, 34]], 0); b.poly([[40, 30], [45, 17], [43, 30]], 1);
+    b.ell(25, 31, 15, 8, 1); b.ell(25, 34, 12, 4, 0); for (let x = 16; x < 36; x += 6) b.line(x, 25, x + 4, 37, 2);
+    b.rect(13, 37, 4, 6, 2); b.rect(32, 37, 4, 6, 2); b.ell(10, 25, 8, 7, 1); b.ell(5, 28, 5, 3.5, 1); b.set(1, 27, 3); b.ell(10, 23, 2, 2.5, 0); b.set(10, 23, 3); b.set(10, 24, 3); b.line(4, 31, 9, 31, 3); },
+  puddlepus(b) { b.ell(40, 38, 7, 4, 3); b.ell(25, 30, 14, 12, 2); b.ell(25, 34, 9, 7, 1); b.ell(9, 30, 8, 4.5, 1); b.line(3, 31, 14, 31, 2); b.set(5, 28, 3); b.set(7, 28, 3);
+    b.ell(18, 24, 2.5, 2.5, 0); b.set(18, 24, 3); b.ell(14, 43, 4, 2, 1); b.ell(31, 43, 4, 2, 1); [[30, 6], [35, 3], [26, 9]].forEach(([x, y]) => b.ell(x, y, 1.5, 2, 0)); },
+  wattle(b) { b.ell(24, 31, 17, 13, 2); b.ell(24, 34, 11, 8, 1); b.ell(12, 18, 3, 3, 2); b.ell(36, 18, 3, 3, 2); b.ell(24, 28, 4, 3, 3); b.set(23, 27, 1);
+    b.ell(17, 23, 2, 2, 0); b.set(17, 23, 3); b.ell(31, 23, 2, 2, 0); b.set(31, 23, 3); b.line(24, 18, 24, 8, 2, 2); b.line(24, 12, 31, 8, 2); [[20, 6], [25, 4], [30, 6], [33, 9], [18, 10]].forEach(([x, y]) => b.ell(x, y, 2.3, 2.3, 0));
+    b.rect(13, 42, 6, 4, 3); b.rect(29, 42, 6, 4, 3); },
+  chookle(b) { b.ell(24, 30, 13, 12, 0); b.ell(30, 31, 7, 5, 1); b.ell(18, 16, 7, 7, 0); [[14, 8], [18, 7], [22, 8]].forEach(([x, y]) => b.ell(x, y, 2, 2.3, 2)); b.poly([[11, 16], [5, 18], [11, 20]], 1); b.ell(12, 23, 1.6, 2.5, 2);
+    b.set(16, 15, 3); b.set(16, 14, 3); b.poly([[36, 22], [44, 16], [42, 28]], 0); b.line(20, 41, 20, 46, 2); b.line(28, 41, 28, 46, 2); b.line(17, 46, 23, 46, 2); b.line(25, 46, 31, 46, 2); },
+  binfluencer(b) { b.ell(28, 30, 12, 10, 0); b.ell(32, 31, 7, 6, 1); b.poly([[38, 26], [46, 30], [40, 34]], 3); b.line(18, 26, 14, 12, 3, 3); b.ell(13, 10, 4, 4, 3); b.line(9, 10, 3, 18, 3, 2); b.line(3, 18, 2, 24, 3);
+    b.set(13, 9, 0); b.rect(20, 32, 6, 9, 3); b.rect(21, 33, 4, 6, 1); b.line(24, 40, 22, 46, 3); b.line(30, 40, 32, 46, 3); },
+  mozzling(b) { b.ell(14, 14, 9, 6, 0); b.ell(34, 14, 9, 6, 0); b.line(10, 14, 18, 14, 1); b.line(30, 14, 38, 14, 1); b.ell(24, 30, 6, 10, 2); for (let y = 25; y < 40; y += 4) b.rect(19, y, 11, 1, 3);
+    b.ell(24, 17, 5, 5, 1); b.ell(21, 16, 2, 2, 3); b.ell(27, 16, 2, 2, 3); b.line(24, 21, 24, 30, 3); b.line(19, 32, 12, 42, 3); b.line(29, 32, 36, 42, 3); b.line(20, 26, 12, 30, 3); b.line(28, 26, 36, 30, 3); },
+  thongsnake(b) { b.ell(24, 30, 12, 16, 1); b.ell(24, 31, 9, 13, 0); b.line(24, 18, 14, 34, 3, 2); b.line(24, 18, 34, 34, 3, 2); b.ell(24, 13, 7, 6, 2); b.set(21, 12, 0); b.set(27, 12, 0); b.set(21, 11, 0); b.set(27, 11, 0); b.line(24, 18, 24, 22, 3); b.set(23, 22, 3); b.set(25, 22, 3);
+    b.ell(13, 34, 2, 2, 2); b.ell(35, 34, 2, 2, 2); },
+  budgie(b) { b.ell(24, 30, 12, 13, 1); b.ell(24, 16, 9, 8, 0); for (let x = 17; x < 32; x += 3) b.set(x, 12, 2); b.poly([[22, 19], [26, 19], [24, 24]], 2); b.ell(20, 16, 1.6, 1.6, 3); b.ell(28, 16, 1.6, 1.6, 3);
+    b.poly([[12, 34], [36, 34], [30, 41], [18, 41]], 3); b.rect(14, 35, 20, 1, 0); b.ell(12, 28, 3, 7, 2); b.ell(36, 28, 3, 7, 2); b.line(21, 42, 20, 47, 2); b.line(27, 42, 28, 47, 2); },
+  voltamander(b) { b.ell(22, 30, 14, 8, 1); b.line(34, 32, 44, 26, 1, 4); b.rect(42, 18, 5, 7, 2); b.rect(43, 15, 1, 3, 3); b.rect(45, 15, 1, 3, 3); b.ell(9, 25, 7, 6, 1);
+    b.ell(7, 23, 2, 2, 0); b.set(7, 23, 3); b.line(3, 28, 9, 29, 3); [[18, 26], [26, 25], [22, 33], [30, 31]].forEach(([x, y]) => b.ell(x, y, 1.5, 1.5, 3)); b.poly([[22, 22], [17, 30], [21, 30], [18, 37], [26, 27], [22, 27], [25, 22]], 0);
+    b.rect(12, 36, 4, 6, 2); b.rect(28, 36, 4, 6, 2); },
+  dropsy(b) { b.ell(24, 34, 13, 11, 2); b.ell(24, 36, 7, 7, 1); b.ell(9, 13, 7, 7, 1); b.ell(39, 13, 7, 7, 1); b.ell(9, 13, 4, 4, 0); b.ell(39, 13, 4, 4, 0); b.ell(24, 19, 12, 11, 1);
+    b.ell(24, 22, 4, 5, 3); b.line(15, 14, 20, 17, 3); b.line(33, 14, 28, 17, 3); b.set(18, 18, 3); b.set(30, 18, 3); b.poly([[21, 27], [22, 31], [23, 27]], 0); b.poly([[25, 27], [26, 31], [27, 27]], 0); b.rect(13, 44, 6, 3, 3); b.rect(29, 44, 6, 3, 3); },
+  cookiedoo(b) { const curls = [[16, 26], [24, 24], [32, 26], [14, 34], [22, 34], [30, 34], [36, 32], [18, 41], [28, 41], [11, 29]]; curls.forEach(([x, y], i) => b.ell(x, y, 5, 5, i % 3 ? 0 : 1));
+    b.ell(24, 15, 10, 9, 0); [[18, 8], [23, 6], [28, 8], [21, 7], [26, 7]].forEach(([x, y]) => b.ell(x, y, 2.4, 2.4, 0)); b.ell(13, 18, 3.5, 7, 1); b.ell(35, 18, 3.5, 7, 1);
+    b.ell(20, 14, 1.8, 1.8, 3); b.ell(28, 14, 1.8, 1.8, 3); b.set(20, 13, 0); b.ell(24, 19, 2.4, 1.7, 3); b.ell(24, 23, 1.6, 2, 2); b.ell(40, 36, 3, 2, 1); },
+  bogeyman(b) { b.rect(16, 38, 3, 8, 1); b.rect(29, 38, 3, 8, 1); b.rect(14, 45, 7, 2, 1); b.rect(27, 45, 7, 2, 1); b.ell(24, 25, 15, 15, 0); for (let y = 14; y < 40; y += 5) for (let x = 12 + (y % 2) * 2; x < 38; x += 5) b.set(x, y, 1);
+    b.line(15, 19, 21, 22, 3); b.line(33, 19, 27, 22, 3); b.ell(19, 24, 1.6, 1.6, 3); b.ell(29, 24, 1.6, 1.6, 3); b.line(19, 32, 29, 31, 3); b.rect(23, 2, 1, 10, 3); b.poly([[24, 2], [32, 4.5], [24, 7]], 2);
+    b.line(40, 26, 46, 40, 3); b.rect(43, 39, 4, 3, 2); },
+};
+// Evolved forms reuse the base drawing plus an upgrade (they got renovated)
+const shades = (b, x, y) => { b.rect(x - 3, y - 1, 7, 3, 3); b.set(x - 4, y - 1, 3); b.set(x + 4, y - 1, 3); b.set(x - 2, y - 1, 0); };
+Object.assign(MON_ART, {
+  snagzilla(b) { MON_ART.sizzlesnag(b); [[16, 22], [22, 20], [28, 21], [34, 23]].forEach(([x, y]) => b.poly([[x - 3, y + 3], [x, y - 5], [x + 3, y + 3]], 2)); shades(b, 10, 24); b.line(5, 33, 12, 35, 1); },
+  torrentpus(b) { MON_ART.puddlepus(b); b.poly([[30, 20], [46, 12], [40, 22]], 1); b.line(30, 20, 46, 12, 3); shades(b, 18, 24); b.rect(19, 39, 12, 2, 3); },
+  wombattle(b) { MON_ART.wattle(b); b.rect(15, 12, 18, 3, 1); b.rect(18, 8, 12, 5, 1); b.line(15, 12, 32, 12, 3); shades(b, 17, 23); shades(b, 31, 23); },
+});
+const MON_CV = {};
+function monSprite(id, back) {
+  const k = id + (back ? '_b' : ''); if (MON_CV[k]) return MON_CV[k];
+  const b = new Buf(48, 48); MON_ART[MONS[id].art](b); b.outline(3);
+  return MON_CV[k] = (back ? b.mirror() : b).canvas();
+}
+
+// ---- Logo / icon ----
+function drawLogo(ctx, x, y) { // x,y = top-left of a 152-wide logo block
+  text(ctx, "GET 'EM:", x + 28 + 1, y + 1, 1, 2); text(ctx, "GET 'EM:", x + 28, y, 3, 2);
+  ctx.fillStyle = PAL[3]; ctx.fillRect(x, y + 16, 152, 27);
+  text(ctx, 'BADEN', x + 32 + 1, y + 19 + 1, 2, 3); text(ctx, 'BADEN', x + 32, y + 19, 0, 3);
+  text(ctx, 'GREEN VERSION', x + 37, y + 46, 2);
+}
+function drawIcon(cv) { // square app icon from game art
+  const s = cv.width, c = cv.getContext('2d'); c.imageSmoothingEnabled = false;
+  const t = document.createElement('canvas'); t.width = t.height = 48; const tc = t.getContext('2d');
+  tc.fillStyle = PAL[1]; tc.fillRect(0, 0, 48, 48); tc.fillStyle = PAL[0]; tc.fillRect(0, 30, 48, 18);
+  tc.drawImage(monSprite('sizzlesnag'), 2, -2);
+  tc.fillStyle = PAL[3]; tc.fillRect(0, 38, 48, 10); text(tc, 'GET EM', 6, 39, 0);
+  c.drawImage(t, 0, 0, s, s);
+}
+
+// ---- 30_audio.js ----
+// ===== Chiptune audio (WebAudio). Starts only after a user gesture. =====
+const Snd = {
+  ctx: null, master: null, song: null, timer: null, step: 0, nextT: 0,
+  get muted() { return Settings.mute; },
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    this.ctx = new AC(); this.master = this.ctx.createGain(); this.master.gain.value = this.muted ? 0 : 0.5; this.master.connect(this.ctx.destination);
+    if (this.pending) { const p = this.pending; this.pending = null; this.music(p); }
+  },
+  setMute(m) { Settings.mute = m; saveSettings(); if (this.master) this.master.gain.value = m ? 0 : 0.5; },
+  note(freq, t, dur, type = 'square', vol = 0.06, slide) {
+    if (!this.ctx || !freq) return; const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dur + 0.02);
+  },
+  noise(t, dur, vol = 0.08) {
+    if (!this.ctx) return; const c = this.ctx, n = c.sampleRate * dur, buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const s = c.createBufferSource(), g = c.createGain(); s.buffer = buf; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(g); g.connect(this.master); s.start(t);
+  },
+  sfx(name) {
+    if (!this.ctx) return; const t = this.ctx.currentTime, N = (f, d, dl = 0, ty, v, sl) => this.note(f, t + dl, d, ty, v, sl);
+    switch (name) {
+      case 'blip': N(1200, .03, 0, 'square', .03); break;
+      case 'select': N(880, .05); N(1320, .07, .05); break;
+      case 'back': N(660, .05); N(440, .07, .05); break;
+      case 'bump': N(90, .08, 0, 'square', .08); break;
+      case 'door': this.noise(t, .15, .05); N(300, .1, .05, 'triangle', .1, 150); break;
+      case 'hit': this.noise(t, .18, .12); N(180, .15, 0, 'square', .06, 60); break;
+      case 'super': this.noise(t, .3, .15); N(240, .25, 0, 'sawtooth', .07, 50); break;
+      case 'faint': N(600, .5, 0, 'square', .06, 80); break;
+      case 'throw': N(400, .2, 0, 'square', .05, 1200); break;
+      case 'shake': N(200, .06, 0, 'square', .07); N(150, .06, .08, 'square', .07); break;
+      case 'catch': [523, 659, 784, 1047].forEach((f, i) => N(f, .12, i * .1)); break;
+      case 'levelup': [523, 659, 784, 659, 784, 1047].forEach((f, i) => N(f, .1, i * .08)); break;
+      case 'heal': [659, 784, 988, 784, 988, 1319].forEach((f, i) => N(f, .14, i * .12, 'triangle', .1)); break;
+      case 'item': [784, 988, 1175, 1568].forEach((f, i) => N(f, .1, i * .07)); break;
+      case 'woof': N(500, .08, 0, 'sawtooth', .06, 250); N(520, .1, .15, 'sawtooth', .06, 260); break;
+      case 'alert': N(1568, .08); N(1568, .12, .1); break;
+      case 'run': N(300, .08, 0, 'square', .05, 900); N(300, .08, .1, 'square', .05, 900); break;
+      case 'gavel': this.noise(t, .05, .2); N(120, .1, 0, 'square', .1); break;
+    }
+  },
+  music(name) {
+    if (this.song === name) return; this.song = name; this.step = 0;
+    if (!this.ctx) { this.pending = name; return; }
+    this.nextT = this.ctx.currentTime + .05;
+    if (!this.timer) this.timer = setInterval(() => this.tick(), 50);
+  },
+  tick() {
+    const s = SONGS[this.song]; if (!s || !this.ctx) return;
+    const spb = 60 / s.bpm / 2; // eighth notes
+    while (this.nextT < this.ctx.currentTime + 0.2) {
+      const i = this.step % s.lead.length;
+      const l = s.lead[i], bs = s.bass[i % s.bass.length];
+      if (l) this.note(nf(l), this.nextT, spb * 0.9, 'square', 0.035);
+      if (bs) this.note(nf(bs), this.nextT, spb * 0.95, 'triangle', 0.09);
+      if (s.drum && s.drum[i % s.drum.length] === 'x') this.noise(this.nextT, 0.05, 0.03);
+      this.step++; this.nextT += spb;
+    }
+  },
+};
+const NOTE_IDX = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+function nf(n) { const m = n.match(/^([A-G]#?)(\d)$/); if (!m) return 0; return 440 * Math.pow(2, (NOTE_IDX[m[1]] + (+m[2] + 1) * 12 - 69) / 12); }
+const seq = s => s.split(' ').map(x => x === '-' ? null : x);
+// Original melodies (eighth-note steps, '-' = rest)
+const SONGS = {
+  title: { bpm: 132, lead: seq('E5 - G5 - C6 - B5 A5 G5 - E5 - D5 E5 G5 - A5 - G5 - E5 - C5 - D5 E5 D5 - C5 - - - G4 - C5 - E5 - G5 F5 E5 - D5 - C5 D5 E5 - D5 - C5 - - - - - - -'), bass: seq('C3 - C3 - G2 - G2 - A2 - A2 - E2 - E2 - F2 - F2 - C3 - C3 - G2 - G2 - G2 - G2 -'), drum: seq('x - - - x - - -') },
+  town: { bpm: 120, lead: seq('C5 E5 G5 E5 F5 - A5 - G5 E5 C5 - D5 - - - E5 G5 C6 G5 A5 - F5 - G5 - E5 D5 C5 - - - A4 C5 F5 C5 D5 - E5 - F5 E5 D5 C5 B4 - G4 - C5 E5 G5 E5 F5 D5 B4 - C5 - - - - - - -'), bass: seq('C3 - G2 - F2 - A2 - C3 - G2 - G2 - B2 - C3 - G2 - F2 - F2 - C3 - G2 - C3 - G2 - F2 - C3 - F2 - D3 - G2 - B2 - G2 - C3 - F2 - G2 - C3 - G2 -') },
+  route: { bpm: 144, lead: seq('G4 B4 D5 G5 F#5 - D5 - E5 - C5 - D5 - B4 - G4 B4 D5 G5 A5 - B5 - A5 G5 F#5 - G5 - - - E5 - C5 - E5 G5 E5 C5 D5 - B4 - D5 F#5 D5 B4 C5 - A4 - C5 E5 C5 A4 B4 D5 G5 - - - - -'), bass: seq('G2 - D3 - G2 - D3 - C3 - G2 - G2 - D3 - G2 - D3 - E2 - B2 - C3 - D3 - G2 - - - C3 - G2 - C3 - G2 - B2 - F#2 - B2 - D3 - A2 - E3 - A2 - E3 - G2 - D3 - G2 - - -'), drum: seq('x - x - x - x x') },
+  battle: { bpm: 168, lead: seq('A4 A4 C5 A4 D5 A4 E5 A4 F5 E5 D5 C5 B4 C5 D5 E5 A4 A4 C5 A4 D5 A4 E5 A4 G5 F5 E5 D5 E5 - - - F5 F5 E5 D5 C5 D5 E5 F5 G5 G5 F5 E5 D5 E5 F5 G5 A5 - G5 - F5 - E5 - D5 C5 B4 C5 D5 - - -'), bass: seq('A2 A2 A3 A2 A2 A2 A3 A2 F2 F2 F3 F2 G2 G2 G3 G2'), drum: seq('x - x x x - x -') },
+  heal: { bpm: 100, lead: seq('E5 - C5 - G5 - E5 - F5 - D5 - C5 - - - D5 - B4 - F5 - D5 - E5 - C5 - - - - -'), bass: seq('C3 - - - A2 - - - F2 - - - G2 - - - G2 - - - G2 - - - C3 - - - C3 - - -') },
+  victory: { bpm: 150, lead: seq('C5 E5 G5 C6 - G5 C6 - E6 - - - D6 C6 B5 C6 D6 - G5 - C6 - - - - - - -'), bass: seq('C3 - G3 - C3 - G3 - A2 - E3 - F2 - G2 - C3 - G2 - C3 - - - - - - -') },
+};
+
+// ---- 40_data.js ----
+// ===== Game data: text pairs, types, moves, monsters, items =====
+// Every risque line is stored as {c: cheeky, f: family}. tr() picks one based on Family Mode.
+const P = (c, f) => ({ c, f });
+const Settings = { family: false, mute: false, fast: false };
+function loadSettings() { try { Object.assign(Settings, JSON.parse(localStorage.getItem('rb_settings') || '{}')); } catch (e) { } }
+function saveSettings() { try { localStorage.setItem('rb_settings', JSON.stringify(Settings)); } catch (e) { } }
+// Cheeky lines only play inside grown-up venues (office, steakhouse, casino, golf club: no dog, no kids).
+// Everywhere else - and always in Family Mode - the clean half is used.
+function adultZone() { try { const m = G && MAPS[G.map]; return !!(m && m.noDog && !m.kids); } catch (e) { return false; } }
+function tr(x) { if (x && typeof x === 'object' && 'c' in x) return (Settings.family || !adultZone()) ? x.f : x.c; return x; }
+
+// Type triangle: SIZZLE > SPROUT > SPLASH > SIZZLE. ZAP beats SPLASH, is weak to SPROUT.
+const TYPES = ['BOGAN', 'SIZZLE', 'SPLASH', 'SPROUT', 'ZAP', 'FLUFF'];
+const TYPE_CHART = { // attacker -> defender -> multiplier (default 1)
+  SIZZLE: { SPROUT: 2, SPLASH: .5, SIZZLE: .5 },
+  SPLASH: { SIZZLE: 2, SPROUT: .5, SPLASH: .5 },
+  SPROUT: { SPLASH: 2, SIZZLE: .5, SPROUT: .5, ZAP: 2 },
+  ZAP: { SPLASH: 2, SPROUT: .5, ZAP: .5 },
+  FLUFF: { BOGAN: 2 },
+  BOGAN: {},
+};
+const typeMult = (a, d) => (TYPE_CHART[a] && TYPE_CHART[a][d]) || 1;
+
+// Moves: pow 0 = status move. eff: 'atkDown' | 'defDown' | 'atkUp'
+const MOVES = {
+  shirtfront: { name: 'SHIRTFRONT', type: 'BOGAN', pow: 40, acc: 100 },
+  trashtalk: { name: P('TRASH TALK', 'SLEDGE'), type: 'BOGAN', pow: 0, acc: 100, eff: 'atkDown' },
+  peck: { name: 'PECK', type: 'BOGAN', pow: 35, acc: 100 },
+  chookrush: { name: P('CHOOK OFF', 'CHOOK RUSH'), type: 'BOGAN', pow: 55, acc: 95 },
+  flamingsnag: { name: P('HOT SAUSAGE', 'FLAMING SNAG'), type: 'SIZZLE', pow: 45, acc: 100, st: 'brn', stc: 10 },
+  barbieblaze: { name: 'BARBIE BLAZE', type: 'SIZZLE', pow: 65, acc: 95, st: 'brn', stc: 15 },
+  bombdive: { name: P('SKINNY DIP', 'BOMB DIVE'), type: 'SPLASH', pow: 45, acc: 100 },
+  ripcurrent: { name: 'RIP CURRENT', type: 'SPLASH', pow: 65, acc: 95 },
+  wattlewhip: { name: 'WATTLE WHIP', type: 'SPROUT', pow: 45, acc: 100 },
+  goodroot: { name: P('GOOD ROOT', 'DEEP ROOTS'), type: 'SPROUT', pow: 65, acc: 95 },
+  gumleaf: { name: 'GUM LEAF STORM', type: 'SPROUT', pow: 55, acc: 95 },
+  bindive: { name: 'BIN DIVE', type: 'BOGAN', pow: 45, acc: 100 },
+  selfie: { name: 'SELFIE FLASH', type: 'BOGAN', pow: 0, acc: 100, eff: 'atkDown' },
+  sting: { name: P('LITTLE PRICK', 'STING'), type: 'BOGAN', pow: 40, acc: 100, st: 'psn', stc: 30 },
+  buzzoff: { name: 'BUZZ OFF', type: 'BOGAN', pow: 0, acc: 100, eff: 'defDown' },
+  wedgie: { name: P('WEDGIE', 'SQUEEZE'), type: 'BOGAN', pow: 45, acc: 100 },
+  flipflop: { name: 'FLIP FLOP', type: 'BOGAN', pow: 55, acc: 95 },
+  speedoslap: { name: P('SPEEDO SLAP', 'WING SLAP'), type: 'SPLASH', pow: 45, acc: 100 },
+  zap: { name: 'ZAP', type: 'ZAP', pow: 40, acc: 100, st: 'par', stc: 10 },
+  fastcharge: { name: 'FAST CHARGE', type: 'ZAP', pow: 60, acc: 95, st: 'par', stc: 20 },
+  dadjoke: { name: 'DAD JOKE', type: 'BOGAN', pow: 0, acc: 60, eff: 'slp' },
+  bindjuice: { name: 'BIN JUICE', type: 'BOGAN', pow: 0, acc: 80, eff: 'psn' },
+  struggle: { name: 'HAIL MARY', type: 'BOGAN', pow: 50, acc: 100, recoil: 4, pp: 99 },
+  snagstorm: { name: 'SNAG STORM', type: 'SIZZLE', pow: 80, acc: 90, st: 'brn', stc: 20 },
+  kingtide: { name: 'KING TIDE', type: 'SPLASH', pow: 80, acc: 90 },
+  bigbuild: { name: 'BIG BUILD', type: 'SPROUT', pow: 80, acc: 90 },
+  rangeanx: { name: P('PERFORMANCE ANXIETY', 'RANGE ANXIETY'), type: 'ZAP', pow: 0, acc: 100, eff: 'defDown' },
+  dropin: { name: 'DROP IN', type: 'BOGAN', pow: 55, acc: 95 },
+  zoomies: { name: 'ZOOMIES', type: 'FLUFF', pow: 45, acc: 100 },
+  puppyeyes: { name: 'PUPPY EYES', type: 'FLUFF', pow: 0, acc: 100, eff: 'atkDown' },
+  fetch: { name: 'FETCH', type: 'FLUFF', pow: 60, acc: 95 },
+  fore: { name: 'FORE!', type: 'BOGAN', pow: 50, acc: 95 },
+  sandtrap: { name: 'SAND TRAP', type: 'SPROUT', pow: 50, acc: 100 },
+  flex: { name: P('FLEX ON EM', 'FLEX'), type: 'BOGAN', pow: 0, acc: 100, eff: 'atkUp' },
+};
+const MOVE_NAME_MAXLEN = 13; // battle menu truncation
+const maxPP = id => MOVES[id].pp || (MOVES[id].pow === 0 ? 20 : MOVES[id].pow < 50 ? 30 : MOVES[id].pow < 70 ? 20 : 10);
+const STATUS = { psn: 'PSN', brn: 'BRN', par: 'PAR', slp: 'SLP' };
+
+// Monsters. base: [hp, atk, def, spd]. learn: [[level, moveId], ...]. xp: base XP yield. rate: catch rate (0-255).
+const MONS = {
+  sizzlesnag: { name: 'SIZZLESNAG', type: 'SIZZLE', art: 'sizzlesnag', base: [45, 56, 42, 58], rate: 45, xp: 64, learn: [[1, 'shirtfront'], [1, 'trashtalk'], [6, 'flamingsnag'], [11, 'barbieblaze']], evo: [12, 'snagzilla'],
+    dex: P('A sausage dog that is also a sausage. Smells like a Bunnings car park on a Saturday.', 'A sausage dog that is also a sausage. Smells like a Saturday sausage sizzle.') },
+  puddlepus: { name: 'PUDDLEPUS', type: 'SPLASH', art: 'puddlepus', base: [50, 50, 50, 48], rate: 45, xp: 64, learn: [[1, 'shirtfront'], [1, 'trashtalk'], [6, 'bombdive'], [11, 'ripcurrent']], evo: [12, 'torrentpus'],
+    dex: P('Lays eggs, has a duck bill, venomous spurs. Nature was clearly three beers deep.', 'Lays eggs, has a duck bill, swims like a champ. Nature was having fun.') },
+  wattle: { name: P('WATTLEBUM', 'WATTLEWOM'), type: 'SPROUT', art: 'wattle', base: [56, 52, 52, 40], rate: 45, xp: 64, learn: [[1, 'shirtfront'], [1, 'trashtalk'], [6, 'wattlewhip'], [11, 'goodroot']], evo: [12, 'wombattle'],
+    dex: P('Does cube-shaped poos. Very proud of it. Will show you.', 'Builds burrows with very tidy square corners. Very proud of it.') },
+  chookle: { name: 'CHOOKLE', type: 'BOGAN', art: 'chookle', base: [40, 45, 36, 52], rate: 200, xp: 50, learn: [[1, 'peck'], [1, 'trashtalk'], [7, 'chookrush']],
+    dex: 'Lays one egg a day and complains about it on Facebook.' },
+  binfluencer: { name: 'BINFLUENCER', type: 'BOGAN', art: 'binfluencer', base: [45, 46, 40, 50], rate: 190, xp: 52, learn: [[1, 'bindive'], [1, 'selfie'], [5, 'bindjuice'], [8, 'flipflop']],
+    dex: 'Lives in a bin, posts like it lives in Portsea. #blessed #bin' },
+  mozzling: { name: 'MOZZLING', type: 'BOGAN', art: 'mozzling', base: [35, 52, 30, 62], rate: 190, xp: 48, learn: [[1, 'sting'], [1, 'buzzoff'], [9, 'dropin']],
+    dex: P('Only ever bites you at 3am, right on the ear. Has no other hobbies.', 'Only ever buzzes in your ear at 3am. Has no other hobbies.') },
+  thongsnake: { name: P('THONGSNAKE', 'SLIPSNAKE'), type: 'BOGAN', art: 'thongsnake', base: [45, 56, 42, 55], rate: 160, xp: 56, learn: [[1, 'wedgie'], [1, 'trashtalk'], [8, 'flipflop']],
+    dex: P('Looks like a thong. Rides up like a thong. Nobody asked for either.', 'Disguises itself as a lost flip-flop at the beach. Sneaky!') },
+  budgie: { name: P('BUDGIE SMUGGLER', 'BUDGIEBIRD'), type: 'SPLASH', art: 'budgie', base: [45, 50, 46, 60], rate: 150, xp: 56, learn: [[1, 'speedoslap'], [1, 'trashtalk'], [8, 'bombdive']],
+    dex: P('Wears tiny tight swimmers and nothing else. Leaves very little to the imagination.', 'Wears tiny striped swimmers. Always swims between the flags.') },
+  voltamander: { name: 'VOLTAMANDER', type: 'ZAP', art: 'voltamander', base: [45, 60, 40, 66], rate: 100, xp: 62, learn: [[1, 'zap'], [1, 'rangeanx'], [9, 'fastcharge']],
+    dex: 'Plugs its own tail in at night. Gets 400km per charge and will tell you about it.' },
+  dropsy: { name: 'DROPSY', type: 'SPROUT', art: 'dropsy', base: [55, 64, 46, 40], rate: 90, xp: 66, learn: [[1, 'dropin'], [1, 'trashtalk'], [7, 'dadjoke'], [9, 'gumleaf']],
+    dex: 'The famous drop bear. Real, apparently. Ask any tourist who left early.' },
+  cookiedoo: { name: 'COOKIEDOO', type: 'FLUFF', art: 'cookiedoo', base: [60, 52, 56, 62], rate: 80, xp: 70, learn: [[1, 'zoomies'], [1, 'puppyeyes'], [9, 'fetch']],
+    dex: 'A curly, fluffy doodle beast. Sheds zero hair and infinite love. Good girl!' },
+  snagzilla: { name: 'SNAGZILLA', type: 'SIZZLE', art: 'snagzilla', base: [65, 76, 60, 78], rate: 45, xp: 140, learn: [[1, 'shirtfront'], [1, 'flamingsnag'], [1, 'barbieblaze'], [12, 'snagstorm']],
+    dex: P('Evolved SIZZLESNAG. Wears sunnies indoors. Thinks the barbie is a personality.', 'Evolved SIZZLESNAG. Wears sunnies indoors. Runs every barbie in the street.') },
+  torrentpus: { name: 'TORRENTPUS', type: 'SPLASH', art: 'torrentpus', base: [70, 70, 70, 66], rate: 45, xp: 140, learn: [[1, 'shirtfront'], [1, 'bombdive'], [1, 'ripcurrent'], [12, 'kingtide']],
+    dex: 'Evolved PUDDLEPUS. Surfs the bay on a stolen boogie board. Says it is a long-term loan.' },
+  wombattle: { name: 'WOMBATTLE', type: 'SPROUT', art: 'wombattle', base: [78, 70, 72, 54], rate: 45, xp: 140, learn: [[1, 'shirtfront'], [1, 'wattlewhip'], [1, 'goodroot'], [12, 'bigbuild']],
+    dex: 'Evolved WATTLEWOM. Wears a hard hat. Has built more granny flats than any council allows.' },
+  bogeyman: { name: 'BOGEYMAN', type: 'SPROUT', art: 'bogeyman', base: [60, 62, 58, 45], rate: 45, xp: 80, learn: [[1, 'fore'], [1, 'flex'], [1, 'sandtrap'], [10, 'gumleaf']],
+    dex: P('A golf ball that never found the fairway. Now it haunts the 19th hole, three sheets to the wind.', 'A golf ball that never found the fairway. Now it haunts the clubhouse.') },
+};
+const STARTERS = ['sizzlesnag', 'puddlepus', 'wattle'];
+const COUNTER = { sizzlesnag: 'puddlepus', puddlepus: 'wattle', wattle: 'sizzlesnag' }; // rival picks the one strong vs yours
+
+// Items. kind: 'ball' | 'heal' | 'battle' | 'key' | 'junk'
+const ITEMS = {
+  lockbox: { name: 'LOCKBOX', kind: 'ball', catch: 1, price: 200, desc: P('Catches wild beasts. Tight fit, but they always squeeze in.', 'Catches wild beasts. Safer than a key under the mat.') },
+  glitterbox: { name: 'GLITTER BOX', kind: 'ball', catch: 2, price: 0, desc: 'Princess Lucy decorated it. Very cool. Catches beasts twice as well.' },
+  flatwhite: { name: 'FLAT WHITE', kind: 'heal', heal: 25, price: 100, desc: P('Heals 25 HP. Extra hot, like the barista.', 'Heals 25 HP. Extra hot, extra shot.') },
+  meatpie: { name: 'MEAT PIE', kind: 'heal', heal: 60, price: 250, desc: P('Heals 60 HP. Mystery meat. Do not ask what is in it.', 'Heals 60 HP. Tomato sauce sold separately.') },
+  fairybread: { name: 'FAIRY BREAD', kind: 'heal', heal: 40, price: 0, desc: 'Heals 40 HP. Rose made it. Hundreds and thousands everywhere.' },
+  gavel: { name: 'AUCTION GAVEL', kind: 'battle', price: 300, desc: P('Raises ATK in battle. Knock it down hard and fast, just how they like it.', 'Raises ATK in battle. Going once, going twice, SOLD!') },
+  cards: { name: 'BUSINESS CARDS', kind: 'key', price: 0, desc: P('BADEN LUCAS, Director. "Call me for a good time... to sell."', 'BADEN LUCAS, Director. "Sold by Baden!"') },
+  brick: { name: 'BUILDING BRICK', kind: 'key', price: 0, desc: 'Princess Gracie built it herself! Fixes a broken bridge. Do not step on it barefoot.' },
+  tennisball: { name: 'TENNIS BALL', kind: 'junk', price: 0, desc: "Cookie's favourite. Soggy. Priceless." },
+  dimmy: { name: 'DIMMY', kind: 'heal', heal: 20, price: 60, desc: "Heals 20 HP. Melbourne's finest dim sim. Steamed or fried, no judgement." },
+  potatocake: { name: 'POTATO CAKE', kind: 'heal', heal: 35, price: 120, desc: 'Heals 35 HP. It is a POTATO CAKE. Not a scallop. Fight me.' },
+  panadoh: { name: 'PANADOH', kind: 'cure', price: 150, desc: 'Cures poison, burns, paralysis and sleep. Take two and call Baden in the morning.' },
+  chips: { name: 'CASINO CHIP', kind: 'junk', price: 0, desc: P('A $5 CLOWN CASINO chip. Worth less than the dignity you lost getting it.', 'A $5 CLOWN CASINO chip. A souvenir!') },
+};
+const SHOP = ['lockbox', 'dimmy', 'potatocake', 'meatpie', 'panadoh', 'gavel'];
+
+// ---- 50_mon.js ----
+// ===== Monster instances & stats =====
+const xpFor = lv => Math.floor(Math.pow(lv, 3) * 0.8); // total XP needed to reach level (generous curve)
+function makeMon(id, lv) {
+  const d = MONS[id], moves = [];
+  d.learn.forEach(([l, m]) => { if (l <= lv && !moves.includes(m)) { moves.push(m); if (moves.length > 4) moves.shift(); } });
+  const m = { id, lv, xp: xpFor(lv), moves, pp: moves.map(maxPP), st: null }; m.hp = maxHp(m); return m;
+}
+const monName = m => tr(MONS[m.id].name);
+const maxHp = m => Math.floor(MONS[m.id].base[0] * m.lv / 50 * 2) + m.lv + 10;
+function stat(m, i) { return Math.floor(MONS[m.id].base[i] * m.lv / 50 * 2) + 5; } // 1 atk, 2 def, 3 spd
+const healMon = m => { m.hp = maxHp(m); m.st = null; m.slp = 0; m.pp = m.moves.map(maxPP); };
+const healAll = () => G.party.forEach(healMon);
+function fixMon(m) { if (!m.pp || m.pp.length !== m.moves.length) m.pp = m.moves.map(maxPP); if (m.st === undefined) m.st = null; return m; }
+const firstAlive = () => G.party.find(m => m.hp > 0);
+
+// ---- 60_engine.js ----
+// ===== Engine: input, timing, UI widgets, scripts =====
+const Input = {
+  held: {}, pressed: {},
+  press(k) { if (!this.held[k]) this.pressed[k] = true; this.held[k] = true; Snd.init(); },
+  release(k) { this.held[k] = false; },
+  take(k) { const p = this.pressed[k]; this.pressed[k] = false; return !!p; },
+  endFrame() { this.pressed = {}; },
+};
+const DIRS = ['down', 'up', 'left', 'right'], DX = [0, 0, -1, 1], DY = [1, -1, 0, 0];
+const heldDir = () => { for (let i = 0; i < 4; i++) if (Input.held[DIRS[i]]) return i; return -1; };
+
+// frame timers for async scripts
+let frameNo = 0; const waiters = [];
+const wait = n => new Promise(r => waiters.push({ t: frameNo + n, r }));
+function tickWaiters() { for (let i = waiters.length - 1; i >= 0; i--) if (waiters[i].t <= frameNo) { const w = waiters.splice(i, 1)[0]; w.r(); } }
+
+// script runner: only one cutscene at a time; overworld input is frozen while busy
+let busy = 0;
+async function run(fn) { busy++; try { await fn(); } catch (e) { console.error(e); } busy--; }
+
+// ---- UI widget stack (all drawn, top one gets input) ----
+const UI = [];
+const removeUI = w => { const i = UI.indexOf(w); if (i >= 0) UI.splice(i, 1); };
+
+class TextBox {
+  constructor(str, res, o = {}) { this.lines = wrap(tr(str), 24); this.page = 0; this.n = 0; this.res = res; this.o = o; this.done = false; this.t = 0; }
+  pageLines() { return this.lines.slice(this.page * 3, this.page * 3 + 3); }
+  update() {
+    const total = this.pageLines().join('').length;
+    if (this.n < total) {
+      this.n += (Settings.fast || Input.held.a || Input.held.b) ? 4 : 1.5;
+      if (frameNo % 4 === 0) Snd.sfx('blip');
+      if (Input.take('a') || Input.take('b')) this.n = total;
+      return;
+    }
+    const last = (this.page + 1) * 3 >= this.lines.length;
+    if (last && this.o.sticky) { if (!this.done) { this.done = true; this.res(); } return; }
+    this.t++;
+    if (Input.take('a') || Input.take('b') || (this.o.auto && last && this.t > (Settings.fast ? 25 : 45))) {
+      if (!last) { this.page++; this.n = 0; this.t = 0; Snd.sfx('blip'); }
+      else { removeUI(this); this.res(); }
+    }
+  }
+  draw(ctx) {
+    box(ctx, 0, 96, 160, 48); let left = this.n;
+    this.pageLines().forEach((l, i) => { const s = l.slice(0, Math.max(0, Math.floor(left))); left -= l.length; text(ctx, s, 8, 104 + i * 11); });
+    const total = this.pageLines().join('').length;
+    if (this.n >= total && !this.o.sticky && !this.o.auto && (frameNo >> 4) % 2) text(ctx, '~', 146, 133);
+  }
+}
+const say = (s, o) => new Promise(r => UI.push(new TextBox(s, r, o)));
+const sayAuto = s => say(s, { auto: true });
+async function sayAll(arr, name) { for (const s of [].concat(arr)) await say(name ? name + ': ' + tr(s) : s); }
+
+class Menu {
+  constructor(items, o, res) {
+    this.items = items; this.o = o; this.res = res; this.i = o.start || 0; this.cols = o.cols || 1;
+    const rows = Math.ceil(items.length / this.cols); this.w = o.w || (Math.max(...items.map(s => tr(s).length)) * 6 + 22) * this.cols;
+    this.h = o.h || rows * 12 + 12; this.x = o.x ?? (160 - this.w); this.y = o.y ?? (96 - this.h);
+  }
+  update() {
+    const n = this.items.length, c = this.cols; let i = this.i;
+    if (Input.take('up')) i -= c; if (Input.take('down')) i += c;
+    if (c > 1) { if (Input.take('left')) i -= 1; if (Input.take('right')) i += 1; }
+    if (i !== this.i && i >= 0 && i < n) { this.i = i; Snd.sfx('blip'); this.o.onMove && this.o.onMove(i); }
+    if (Input.take('a')) { Snd.sfx('select'); removeUI(this); this.res(this.i); }
+    else if (Input.take('b') && this.o.cancel !== false) { Snd.sfx('back'); removeUI(this); this.res(-1); }
+  }
+  draw(ctx) {
+    box(ctx, this.x, this.y, this.w, this.h); const cw = (this.w - 8) / this.cols;
+    this.items.forEach((s, k) => { const cx = this.x + 14 + (k % this.cols) * cw, cy = this.y + 8 + Math.floor(k / this.cols) * 12; text(ctx, tr(s), cx, cy); if (k === this.i) text(ctx, '>', cx - 8, cy); });
+  }
+}
+const choose = (items, o = {}) => new Promise(r => UI.push(new Menu(items, o, r)));
+async function ask(q, items = ['YES', 'NO'], o = {}) {
+  let tb; await new Promise(r => { tb = new TextBox(q, r, { sticky: true }); UI.push(tb); });
+  const i = await choose(items, Object.assign({ cancel: true }, o)); removeUI(tb); return i;
+}
+
+// generic full-screen widget driven by callbacks
+class Screen {
+  constructor(o, res) { this.o = o; this.res = res; }
+  close(v) { removeUI(this); this.res(v); }
+  update() { this.o.update ? this.o.update(this) : ((Input.take('a') || Input.take('b')) && this.close()); }
+  draw(ctx) { this.o.draw(ctx, this); }
+}
+const screen = o => new Promise(r => UI.push(new Screen(o, r)));
+
+// ---- fades ----
+let fade = 0; // 0..4 (4 = black)
+async function fadeOut() { for (let i = 1; i <= 4; i++) { fade = i; await wait(3); } }
+async function fadeIn() { for (let i = 3; i >= 0; i--) { fade = i; await wait(3); } }
+let flashWhite = 0;
+
+// ---- 70_world.js ----
+// ===== Overworld: state, movement, drawing, interaction =====
+let G = null;            // saved game state
+let scene = 'title';     // 'title' | 'world' | 'battle' | 'blank'
+const W = { prog: 0, moving: false, to: null, frame: 0, turnHold: 0, justMoved: false, folFrom: null, bumpT: 0 };
+const SAVE_KEY = 'rb_save_v1';
+
+function newGame() {
+  G = { v: 1, map: 'apt', x: 8, y: 2, dir: 0, money: 500, party: [], box: [], bag: { cards: 1 }, flags: {}, fol: null,
+    seen: {}, caught: {}, respawn: { map: 'town1', x: 4, y: 13 }, time: 0, steps: 0, badges: 0 };
+}
+// ---- Saves: main slot + 3 rolling backups (taken at most every 3 min), validation, export/import ----
+const BAK_KEY = 'rb_save_backups';
+function validSave(g) { return !!(g && typeof g === 'object' && MAPS[g.map] && Array.isArray(g.party) && g.bag && g.flags && Number.isFinite(g.x) && Number.isFinite(g.y)); }
+function migrate(g) {
+  g.party.forEach(fixMon); (g.box || (g.box = [])).forEach(fixMon);
+  g.seen = g.seen || {}; g.caught = g.caught || {}; g.respawn = g.respawn || { map: 'town1', x: 4, y: 13 };
+  if (g.flags.cookie && !g.fol) g.fol = { x: g.x, y: g.y, dir: g.dir || 0 };
+  const m = MAPS[g.map]; if (g.x < 0 || g.y < 0 || g.x >= m.w || g.y >= m.h || SOLID.has(m.tiles[g.y][g.x])) { g.map = g.respawn.map; g.x = g.respawn.x; g.y = g.respawn.y; }
+  g.v = 2; return g;
+}
+const readBackups = () => { try { return JSON.parse(localStorage.getItem(BAK_KEY) || '[]'); } catch (e) { return []; } };
+const hasSave = () => { try { return !!localStorage.getItem(SAVE_KEY) || readBackups().length > 0; } catch (e) { return false; } };
+function saveGame() {
+  if (!G) return false;
+  try {
+    G.savedAt = Date.now(); const s = JSON.stringify(G), prev = localStorage.getItem(SAVE_KEY);
+    if (prev && prev !== s) {
+      let baks = readBackups();
+      if (!baks.length || Date.now() - baks[0].t > 180000) { baks.unshift({ t: Date.now(), d: prev }); baks = baks.slice(0, 3); try { localStorage.setItem(BAK_KEY, JSON.stringify(baks)); } catch (e) { } }
+    }
+    localStorage.setItem(SAVE_KEY, s); return true;
+  } catch (e) { console.warn('save failed', e); return false; }
+}
+let lastAuto = 0;
+function autoSave() { if (G && scene === 'world' || G && scene === 'battle') { lastAuto = frameNo; return saveGame(); } return false; }
+function loadFrom(str) { try { const g = JSON.parse(str); if (validSave(g)) { G = migrate(g); return true; } } catch (e) { } return false; }
+function loadGame() {
+  try { if (loadFrom(localStorage.getItem(SAVE_KEY))) return true; } catch (e) { }
+  for (const b of readBackups()) if (loadFrom(b.d)) { console.warn('main save was damaged; restored a backup'); return true; }
+  return false;
+}
+function exportCode() { return 'GETEM1:' + btoa(unescape(encodeURIComponent(JSON.stringify(G)))); }
+function importCode(code) {
+  code = String(code || '').trim(); let json = code;
+  if (code.startsWith('GETEM1:')) { try { json = decodeURIComponent(escape(atob(code.slice(7).replace(/\s+/g, '')))); } catch (e) { return false; } }
+  const old = G; if (loadFrom(json)) return true; G = old; return false;
+}
+
+const curMap = () => MAPS[G.map];
+function tileAt(x, y, m = curMap()) {
+  if (x < 0 || y < 0 || x >= m.w || y >= m.h) return null;
+  let c = m.tiles[y][x]; if (c === 'B' && G.flags.bridge) c = '|'; return c;
+}
+const npcVisible = n => !(n.cond && !n.cond()) && !(n.item && G.flags['got_' + n.id]);
+const npcAt = (x, y) => curMap().npcs.find(n => npcVisible(n) && n.x === x && n.y === y);
+const warpAt = (x, y) => curMap().warps[x + ',' + y];
+function canWalk(x, y) {
+  const t = tileAt(x, y); if (t === null) return false;
+  if (SOLID.has(t)) return false;
+  if (t === 'D' && !warpAt(x, y)) return false;
+  return !npcAt(x, y);
+}
+const followerOn = () => G.flags.cookie && G.fol && !curMap().noDog;
+
+function startStep(d) {
+  const nx = G.x + DX[d], ny = G.y + DY[d];
+  if (!canWalk(nx, ny)) { if (W.bumpT <= 0) { Snd.sfx('bump'); W.bumpT = 20; } return; }
+  if (followerOn()) { W.folFrom = { x: G.fol.x, y: G.fol.y }; G.fol.dir = G.fol.x === G.x && G.fol.y === G.y ? d : dirTo(G.fol, G); G.fol.x = G.x; G.fol.y = G.y; }
+  W.from = { x: G.x, y: G.y }; G.x = nx; G.y = ny; W.moving = true; W.prog = 0; W.frame = (W.frame % 2) + 1;
+}
+const dirTo = (a, b) => b.x > a.x ? 3 : b.x < a.x ? 2 : b.y < a.y ? 1 : 0;
+
+function worldUpdate() {
+  W.bumpT--;
+  if (W.moving) {
+    W.prog += 1.6;
+    if (W.prog >= 16) { W.moving = false; W.prog = 0; W.justMoved = true; onStepDone(); }
+    return;
+  }
+  if (busy || UI.length) return;
+  if (Input.take('start')) { run(pauseMenu); return; }
+  if (Input.take('a')) { run(interact); return; }
+  Input.take('b');
+  const d = heldDir();
+  if (d < 0) { W.justMoved = false; W.turnHold = 0; return; }
+  if (d !== G.dir && !W.justMoved) { G.dir = d; W.turnHold = 5; return; }
+  G.dir = d;
+  if (W.turnHold > 0) { W.turnHold--; return; }
+  startStep(d);
+}
+
+function onStepDone() {
+  G.steps++;
+  const m = curMap(), w = warpAt(G.x, G.y);
+  if (w) { run(() => warp(w)); return; }
+  for (const t of (m.triggers || [])) if (G.x >= t.x && G.x < t.x + (t.w || 1) && G.y >= t.y && G.y < t.y + (t.h || 1) && (!t.cond || t.cond())) { run(t.run); return; }
+  for (const n of m.npcs) if (n.trainer && npcVisible(n) && !G.flags['beat_' + n.id] && sees(n)) { run(() => trainerSpotted(n)); return; }
+  if (tileAt(G.x, G.y) === 'g') {
+    const zone = (m.enc.zones || []).find(z => G.x >= z.x && G.x < z.x + z.w && G.y >= z.y && G.y < z.y + z.h);
+    if (Math.random() < (zone?.rate || m.enc.rate || 0.1)) { const tbl = zone ? zone.table : m.enc.table; run(() => wildEncounter(tbl)); return; }
+  }
+  if (G.flags.cookie && m.outdoor && G.steps % 7 === 0 && Math.random() < 0.09) run(cookieFind);
+}
+function sees(n) {
+  const r = n.trainer.range ?? 4;
+  for (let i = 1; i <= r; i++) {
+    const x = n.x + DX[n.dir] * i, y = n.y + DY[n.dir] * i;
+    if (x === G.x && y === G.y) return true;
+    const t = tileAt(x, y); if (t === null || SOLID.has(t) || npcAt(x, y)) return false;
+  }
+  return false;
+}
+
+async function warp(w, silent) {
+  if (!silent) Snd.sfx('door');
+  await fadeOut();
+  G.map = w.to; G.x = w.x; G.y = w.y; if (w.dir !== undefined) G.dir = w.dir;
+  if (G.flags.cookie) G.fol = { x: G.x, y: G.y, dir: G.dir };
+  Snd.music(curMap().music);
+  await wait(4); await fadeIn(); autoSave();
+  if (G.flags.cookie && curMap().noDog) await say('Cookie waits by the door like a good girl. No dogs allowed in here!');
+}
+
+async function interact() {
+  const fx = G.x + DX[G.dir], fy = G.y + DY[G.dir], m = curMap();
+  if (followerOn() && G.fol.x === fx && G.fol.y === fy) return cookieTalk();
+  let n = npcAt(fx, fy);
+  const t = tileAt(fx, fy);
+  if (!n && (t === 'c' || t === 'H' || t === 't')) n = npcAt(fx + DX[G.dir], fy + DY[G.dir]);
+  if (n) return talkTo(n);
+  const s = m.signs && m.signs[fx + ',' + fy];
+  if (s) { Snd.sfx('blip'); return typeof s === 'function' ? s() : sayAll(s); }
+  const h = (m.hidden || []).find(h => h.x === fx && h.y === fy && !G.flags['hid_' + h.id]);
+  if (h) { G.flags['hid_' + h.id] = 1; return giveItem(h.item, h.n || 1, h.text); }
+  if (t === 'B' && TILE_SCRIPTS.B) return TILE_SCRIPTS.B();
+}
+
+async function talkTo(n) {
+  if (!n.item && !n.fixed) n.dir = [1, 0, 3, 2][G.dir];
+  if (n.item) { G.flags['got_' + n.id] = 1; return giveItem(n.item, n.n || 1, n.msg); }
+  if (n.trainer && !G.flags['beat_' + n.id]) return trainerBattle(n);
+  if (n.trainer) return sayAll(n.trainer.after, n.name);
+  if (typeof n.talk === 'function') return n.talk(n);
+  return sayAll(n.talk, n.name);
+}
+async function trainerSpotted(n) {
+  Snd.sfx('alert'); n.bang = 40; await wait(40);
+  if (n.hx === undefined) { n.hx = n.x; n.hy = n.y; n.hdir = n.dir; }
+  // walk up to the player
+  while (Math.abs(n.x - G.x) + Math.abs(n.y - G.y) > 1) {
+    for (let i = 1; i <= 8; i++) { n.ox = DX[n.dir] * i * 2; n.oy = DY[n.dir] * i * 2; await wait(1); }
+    n.x += DX[n.dir]; n.y += DY[n.dir]; n.ox = n.oy = 0;
+  }
+  G.dir = [1, 0, 3, 2][n.dir];
+  await trainerBattle(n);
+}
+async function trainerBattle(n) {
+  await sayAll(n.trainer.intro, n.name);
+  const r = await battle({ trainer: n });
+  if (n.hx !== undefined) { n.x = n.hx; n.y = n.hy; n.dir = n.hdir; } // trainers walk back to their spot
+  if (r === 'win') { G.flags['beat_' + n.id] = 1; if (n.trainer.onWin) await n.trainer.onWin(); }
+}
+
+function giveItem(id, n = 1, msg) {
+  Snd.sfx('item'); if (id === 'money') { G.money += n; return say(msg || `Baden found $${n}!`); }
+  G.bag[id] = (G.bag[id] || 0) + n;
+  return say(msg ? tr(msg) : `Baden got ${ITEMS[id].name}${n > 1 ? ' x' + n : ''}!`);
+}
+const giveMon = (m) => { G.caught[m.id] = G.seen[m.id] = 1; if (G.party.length < 6) { G.party.push(m); return 'party'; } G.box.push(m); return 'box'; };
+
+// ---- Cookie the Bernedoodle ----
+async function cookieTalk() {
+  Snd.sfx('woof');
+  const lines = ['Cookie wags her whole fluffy body. WOOF!', 'Cookie gives Baden the puppy eyes. She wants a treat.', 'Cookie rolls over for a belly rub. Good girl!', 'Cookie sneezes. Bless you, Cookie.', 'Cookie is very proud of you, Baden.'];
+  await say(lines[Math.floor(Math.random() * lines.length)]);
+}
+async function cookieFind() {
+  const pool = ['flatwhite', 'flatwhite', 'lockbox', 'tennisball', 'meatpie', 'money'];
+  const id = pool[Math.floor(Math.random() * pool.length)];
+  Snd.sfx('woof'); await wait(10);
+  if (id === 'money') { G.money += 100; Snd.sfx('item'); return say('Cookie is sniffing at something... Cookie found $100! Good girl!'); }
+  G.bag[id] = (G.bag[id] || 0) + 1; Snd.sfx('item');
+  await say(`Cookie is sniffing at something... Cookie found a ${ITEMS[id].name}! Good girl!`);
+}
+
+// ---- drawing ----
+function camera() {
+  const m = curMap(); let px = G.x * 16, py = G.y * 16;
+  if (W.moving) { px = W.from.x * 16 + (G.x - W.from.x) * W.prog; py = W.from.y * 16 + (G.y - W.from.y) * W.prog; }
+  let cx = px - 72, cy = py - 64;
+  if (m.w * 16 <= SW) cx = (m.w * 16 - SW) / 2; else cx = Math.max(0, Math.min(cx, m.w * 16 - SW));
+  if (m.h * 16 <= SH) cy = (m.h * 16 - SH) / 2; else cy = Math.max(0, Math.min(cy, m.h * 16 - SH));
+  return { cx: Math.round(cx), cy: Math.round(cy), px, py };
+}
+function drawWorld(ctx) {
+  const m = curMap(), { cx, cy, px, py } = camera();
+  ctx.fillStyle = m.outdoor ? PAL[0] : PAL[3]; ctx.fillRect(0, 0, SW, SH);
+  const anim = (frameNo >> 5) % 2;
+  for (let y = Math.floor(cy / 16); y <= Math.floor((cy + SH) / 16); y++) for (let x = Math.floor(cx / 16); x <= Math.floor((cx + SW) / 16); x++) {
+    const t = tileAt(x, y); if (!t) continue; const fr = TILE_CV[t] || TILE_CV['.'];
+    ctx.drawImage(fr[anim % fr.length], x * 16 - cx, y * 16 - cy);
+  }
+  // sprites sorted by y
+  const spr = [];
+  for (const n of m.npcs) if (npcVisible(n)) spr.push({ y: n.y * 16 + (n.oy || 0), x: n.x * 16 + (n.ox || 0), cv: charFrames(n.spr)[n.dir || 0][n.ox || n.oy ? (frameNo >> 3) % 2 + 1 : 0], n });
+  if (followerOn()) {
+    let fx = G.fol.x * 16, fy = G.fol.y * 16;
+    if (W.moving && W.folFrom) { fx = W.folFrom.x * 16 + (G.fol.x - W.folFrom.x) * W.prog; fy = W.folFrom.y * 16 + (G.fol.y - W.folFrom.y) * W.prog; }
+    if (!(fx === px && fy === py)) spr.push({ x: fx, y: fy - .5, cv: charFrames('dog')[G.fol.dir][W.moving ? W.frame : 0], grass: true });
+  }
+  spr.push({ x: px, y: py, cv: charFrames('baden')[G.dir][W.moving && W.prog < 12 ? W.frame : 0], grass: true });
+  spr.sort((a, b) => a.y - b.y);
+  for (const s of spr) {
+    const sx = Math.round(s.x - cx), sy = Math.round(s.y - cy);
+    ctx.drawImage(s.cv, sx, sy - (s.n ? 0 : 2));
+    if (s.grass && tileAt(Math.round(s.x / 16), Math.round(s.y / 16)) === 'g') ctx.drawImage(TILE_CV.g[0], 0, 10, 16, 6, sx, sy + 10, 16, 6);
+    if (s.n && s.n.bang > 0) { s.n.bang--; box(ctx, sx + 3, sy - 12, 10, 12); text(ctx, '!', sx + 6, sy - 9); }
+  }
+}
+
+// ---- 80_battle.js ----
+// ===== Turn-based battles =====
+let B = null; // battle state (also read by drawBattle)
+const stageMul = s => s >= 0 ? (2 + s) / 2 : 2 / (2 - s);
+
+async function wildEncounter(table) { // table: [[id, minLv, maxLv, weight], ...]
+  let r = Math.random() * table.reduce((a, t) => a + t[3], 0), pick = table[0];
+  for (const t of table) { r -= t[3]; if (r <= 0) { pick = t; break; } }
+  const lv = pick[1] + Math.floor(Math.random() * (pick[2] - pick[1] + 1));
+  return battle({ wild: makeMon(pick[0], lv) });
+}
+
+async function battleTransition() {
+  for (let i = 0; i < 3; i++) { flashWhite = 1; await wait(4); flashWhite = 0; await wait(4); }
+  await fadeOut();
+}
+
+async function battle(o) {
+  const tr_ = o.trainer, tname = tr_ ? tr_.name : '';
+  Snd.music(o.music || 'battle');
+  await battleTransition();
+  B = { o, tr: tr_, tname, ep: tr_ ? tr_.trainer.team.map(([id, lv]) => makeMon(id, lv)) : [o.wild], ei: 0,
+    p: firstAlive(), st: { p: { atk: 0, def: 0 }, e: { atk: 0, def: 0 } }, showE: false, showP: false, eX: 160, pX: -60,
+    blink: { e: 0, p: 0 }, faint: { e: 0, p: 0 }, ball: null, trainerSpr: true, lunge: { e: 0, p: 0 } };
+  G.party.forEach(fixMon); B.ep.forEach(fixMon); B.lv = new Set();
+  B.e = B.ep[0]; B.dispE = B.e.hp; B.dispP = B.p.hp; G.seen[B.e.id] = 1;
+  scene = 'battle'; await fadeIn();
+  for (let i = 0; i <= 20; i++) { B.eX = 160 - (160 - 104) * i / 20; B.pX = -60 + 68 * i / 20; await wait(1); }
+  if (tr_) { await sayAuto(`${tname} wants to negotiate!`); B.trainerSpr = false; B.showE = true; await sayAuto(`${tname} sent out ${monName(B.e)}!`); }
+  else { B.trainerSpr = false; B.showE = true; await sayAuto(tr(o.wild.id === 'budgie' ? P('A wild BUDGIE SMUGGLER appeared! Something is... bulging.', 'A wild BUDGIEBIRD flapped in for an appraisal!') : `A wild ${monName(B.e)} wants an appraisal!`)); }
+  B.showP = true; await sayAuto(`Go, ${monName(B.p)}! Close the deal!`);
+  B.part = new Set([B.p]);
+
+  let result = null;
+  while (!result) {
+    const act = await chooseAction();
+    if (act.type === 'run') {
+      if (tr_) { await say("No cooling-off period in trainer battles, Baden!"); continue; }
+      if (Math.random() < (stat(B.p, 3) >= stat(B.e, 3) ? 1 : 0.6)) { Snd.sfx('run'); await sayAuto('Baden walked away from the deal!'); result = 'run'; break; }
+      await sayAuto("Couldn't get out of the contract!");
+      result = await enemyTurn(); if (!result) result = await endTurn(); continue;
+    }
+    if (act.type === 'switch') { await switchTo(act.mon); result = await enemyTurn(); if (!result) result = await endTurn(); continue; }
+    if (act.type === 'item') {
+      const r = await useItemInBattle(act.id, act.target);
+      if (r === 'caught') { result = 'caught'; break; }
+      if (r === 'noturn') continue;
+      result = await enemyTurn(); if (!result) result = await endTurn(); continue;
+    }
+    // fight: speed decides order
+    const eMove = pickEnemyMove();
+    const pFirst = speed(B.p) > speed(B.e) || (speed(B.p) === speed(B.e) && Math.random() < 0.5);
+    if (pFirst) { result = await doMove('p', act.move, act.idx); if (!result && B.e.hp > 0) result = await doMove('e', eMove); }
+    else { result = await doMove('e', eMove); if (!result && B.p.hp > 0) result = await doMove('p', act.move, act.idx); }
+    if (!result) result = await endTurn();
+  }
+  // wrap up
+  if (result === 'lose') await blackout();
+  if (result === 'win' && tr_) {
+    Snd.music('victory'); B.trainerSpr = true; B.showE = false; B.eX = 104;
+    await say(`${tname} was defeated!`);
+    if (tr_.trainer.lose) await sayAll(tr_.trainer.lose, tname);
+    const cash = tr_.trainer.money || 100 * B.ep[B.ep.length - 1].lv; G.money += cash; Snd.sfx('item');
+    await say(`Baden earned $${cash} in commission!`);
+  }
+  await fadeOut(); scene = 'world'; B = null;
+  if (result === 'lose' && !o.noLose) { const r = G.respawn; G.map = r.map; G.x = r.x; G.y = r.y; G.dir = 0; if (G.flags.cookie) G.fol = { x: G.x, y: G.y, dir: 0 }; healAll(); }
+  if (result === 'lose' && o.noLose) healAll();
+  Snd.music(curMap().music); await fadeIn();
+  if (result === 'lose' && !o.noLose) await say('Baden had a lie down and a flat white. His beasts are all patched up!');
+  if (result !== 'lose') await evolveCheck(G.party.filter(m => m.hp > 0));
+  autoSave();
+  return result;
+}
+
+async function chooseAction() {
+  for (;;) {
+    B.prompt = true;
+    const i = await choose(['FIGHT', 'BAG', 'TEAM', 'RUN'], { cols: 2, x: 72, y: 96, w: 88, h: 48, cancel: false, start: B.lastMain || 0 });
+    B.prompt = false; B.lastMain = i;
+    if (i === 0) {
+      const mv = B.p.moves;
+      if (B.p.pp.every(x => x <= 0)) { await say(`${monName(B.p)} has no moves left! Time for a HAIL MARY!`); return { type: 'fight', move: 'struggle', idx: null }; }
+      B.hoverMove = B.lastMove || 0;
+      const k = await choose(mv.map(m => tr(MOVES[m].name)), { x: 0, y: 84, w: 160, h: 60, start: B.lastMove || 0, onMove: j => B.hoverMove = j });
+      B.hoverMove = null; if (k < 0) continue; B.lastMove = k;
+      if (B.p.pp[k] <= 0) { await say("No PP left for that one! Even Baden can't sell the same pitch twice."); continue; }
+      return { type: 'fight', move: mv[k], idx: k };
+    }
+    if (i === 1) { const id = await bagScreen('battle'); if (!id) continue;
+      if (ITEMS[id].kind === 'heal' || ITEMS[id].kind === 'cure') { const t = await teamScreen('use'); if (t < 0) continue; return { type: 'item', id, target: G.party[t] }; }
+      return { type: 'item', id };
+    }
+    if (i === 2) { const t = await teamScreen('battle'); if (t < 0) continue; const m = G.party[t];
+      if (m === B.p) { await say(`${monName(m)} is already out there negotiating!`); continue; }
+      if (m.hp <= 0) { await say(`${monName(m)} has fainted. It needs a holiday.`); continue; }
+      return { type: 'switch', mon: m };
+    }
+    if (i === 3) return { type: 'run' };
+  }
+}
+const speed = m => stat(m, 3) * (m.st === 'par' ? 0.25 : 1);
+function pickEnemyMove() {
+  const mv = B.e.moves.filter((m, i) => B.e.pp[i] > 0); if (!mv.length) return 'struggle';
+  const dmg = mv.filter(m => MOVES[m].pow > 0 && !(MOVES[m].eff && B.p.st));
+  if (dmg.length && Math.random() < 0.75) return dmg[Math.floor(Math.random() * dmg.length)];
+  return mv[Math.floor(Math.random() * mv.length)];
+}
+const label = side => side === 'p' ? monName(B.p) : (B.tr ? 'Enemy ' : 'Wild ') + monName(B.e);
+
+async function doMove(side, mv, idx) {
+  const atk = side === 'p' ? B.p : B.e, def = side === 'p' ? B.e : B.p, ds = side === 'p' ? 'e' : 'p', M = MOVES[mv];
+  if (atk.st === 'slp') {
+    if (--atk.slp > 0) { await sayAuto(`${label(side)} is fast asleep. Dreaming of a 5% deposit.`); return null; }
+    atk.st = null; await sayAuto(`${label(side)} woke up! Grumpy.`); return null;
+  }
+  if (atk.st === 'par' && Math.random() < 0.25) { await sayAuto(`${label(side)} is paralysed! Stuck in traffic on the Westgate.`); return null; }
+  if (mv !== 'struggle') { const i = idx != null ? idx : atk.moves.indexOf(mv); if (i >= 0) atk.pp[i] = Math.max(0, atk.pp[i] - 1); }
+  await sayAuto(`${label(side)} used ${tr(M.name)}!`);
+  if (Math.random() * 100 >= M.acc) { await sayAuto(`But it missed! Like a dodgy valuation.`); return null; }
+  for (let i = 0; i < 6; i++) { B.lunge[side] = [0, 3, 6, 6, 3, 0][i]; await wait(1); }
+  if (!M.pow) {
+    Snd.sfx('select');
+    if (STATUS[M.eff]) { if (def.st) { await sayAuto('But it failed! Already under contract.'); return null; } return inflict(def, ds, M.eff); }
+    if (M.eff === 'atkUp') { B.st[side].atk = Math.min(6, B.st[side].atk + 1); await sayAuto(`${label(side)}'s ATTACK rose! Capital growth!`); }
+    else { const k = M.eff === 'atkDown' ? 'atk' : 'def'; B.st[ds][k] = Math.max(-6, B.st[ds][k] - 1); await sayAuto(`${label(ds)}'s ${k === 'atk' ? 'ATTACK' : 'DEFENCE'} fell! Talked right down.`); }
+    return null;
+  }
+  const A = stat(atk, 1) * stageMul(B.st[side].atk) * (atk.st === 'brn' ? 0.5 : 1), D = stat(def, 2) * stageMul(B.st[ds].def);
+  let dmg = ((2 * atk.lv / 5 + 2) * M.pow * A / D) / 50 + 2;
+  if (MONS[atk.id].type === M.type) dmg *= 1.5;
+  const eff = typeMult(M.type, MONS[def.id].type); dmg *= eff;
+  const crit = Math.random() < 1 / 16; if (crit) dmg *= 1.5;
+  dmg = Math.max(1, Math.floor(dmg * (0.85 + Math.random() * 0.15)));
+  Snd.sfx(eff > 1 ? 'super' : 'hit'); B.blink[ds] = 18; await wait(18);
+  def.hp = Math.max(0, def.hp - dmg); await hpSettle();
+  if (crit) await sayAuto('A critical hit! Huge capital gain!');
+  if (eff > 1) await sayAuto("Comparable sales say: it's super effective!");
+  if (eff < 1) await sayAuto("Under reserve... it's not very effective.");
+  if (def.hp <= 0) { const r = await faint(ds); if (r) return r; }
+  else if (M.st && !def.st && Math.random() * 100 < M.stc) await inflict(def, ds, M.st);
+  if (M.recoil && atk.hp > 0) { atk.hp = Math.max(0, atk.hp - Math.max(1, Math.floor(dmg / M.recoil))); await hpSettle(); await sayAuto(`${label(side)} is hurt by the recoil!`); if (atk.hp <= 0) return faint(side); }
+  return null;
+}
+const ST_IMMUNE = { brn: 'SIZZLE', par: 'ZAP' };
+async function inflict(m, side, st) {
+  if (ST_IMMUNE[st] === MONS[m.id].type) { await sayAuto(`It doesn't affect ${label(side)}!`); return null; }
+  m.st = st; if (st === 'slp') m.slp = 2 + Math.floor(Math.random() * 3);
+  await sayAuto(`${label(side)} ${({ psn: 'was poisoned! Dodgy servo sushi.', brn: 'was burned! Should have worn SPF 50.', par: 'is paralysed! Body corporate red tape.', slp: 'fell asleep! That joke was terrible.' })[st]}`);
+  return null;
+}
+async function endTurn() { // poison / burn chip damage, Gen-1 style
+  for (const side of ['p', 'e']) {
+    const m = side === 'p' ? B.p : B.e;
+    if (m.hp <= 0 || (m.st !== 'psn' && m.st !== 'brn')) continue;
+    m.hp = Math.max(0, m.hp - Math.max(1, Math.floor(maxHp(m) / 16))); B.blink[side] = 10; await hpSettle();
+    await sayAuto(`${label(side)} is hurt by its ${m.st === 'psn' ? 'poison' : 'burn'}!`);
+    if (m.hp <= 0) { const r = await faint(side); if (r) return r; }
+  }
+  return null;
+}
+async function hpSettle() { while (Math.round(B.dispE) !== B.e.hp || Math.round(B.dispP) !== B.p.hp) await wait(1); }
+
+async function faint(side) {
+  Snd.sfx('faint'); for (let i = 0; i <= 12; i++) { B.faint[side] = i * 4; await wait(1); }
+  if (side === 'e') {
+    B.showE = false; B.faint.e = 0;
+    await sayAuto(`${label('e')} fainted! Settled!`);
+    for (const m of B.part) if (m.hp > 0) await gainXp(m, Math.floor(MONS[B.e.id].xp * B.e.lv / 5 * (B.tr ? 1.5 : 1) / B.part.size));
+    if (B.tr && B.ei < B.ep.length - 1) {
+      B.ei++; B.e = B.ep[B.ei]; B.dispE = B.e.hp; B.dispE = B.e.hp; B.st.e = { atk: 0, def: 0 }; G.seen[B.e.id] = 1;
+      await sayAuto(`${B.tname} sent out ${monName(B.e)}!`); B.showE = true; B.part = new Set([B.p]); return null;
+    }
+    return 'win';
+  }
+  B.showP = false; B.faint.p = 0;
+  await say(`${monName(B.p)} fainted! It's gone to the pub to think about what it did.`);
+  if (!firstAlive()) { await say('Baden is out of usable beasts!'); return 'lose'; }
+  for (;;) { const t = await teamScreen('forced'); const m = G.party[t]; if (m && m.hp > 0) { await switchTo(m, true); return null; } }
+}
+async function switchTo(m, forced) {
+  if (!forced) { await sayAuto(`Come back, ${monName(B.p)}! Good work.`); }
+  B.showP = false; await wait(10); B.p = m; B.dispP = m.hp; B.st.p = { atk: 0, def: 0 }; B.part.add(m);
+  B.showP = true; await sayAuto(`Go, ${monName(m)}! Close the deal!`);
+}
+async function enemyTurn() { if (B.e.hp > 0 && B.p.hp > 0) return doMove('e', pickEnemyMove()); return null; }
+
+async function gainXp(m, n) {
+  m.xp += n; if (m === B.p) await sayAuto(`${monName(m)} gained ${n} XP!`);
+  while (m.lv < 100 && m.xp >= xpFor(m.lv + 1)) {
+    const old = maxHp(m); m.lv++; B.lv.add(m); m.hp += maxHp(m) - old; if (m === B.p) B.dispP = m.hp;
+    Snd.sfx('levelup'); await say(`${monName(m)} grew to Lv${m.lv}! Strong capital growth!`);
+    for (const [l, mv] of MONS[m.id].learn) if (l === m.lv && !m.moves.includes(mv)) await learnMove(m, mv);
+  }
+}
+async function learnMove(m, mv) {
+  const nm = tr(MOVES[mv].name);
+  if (m.moves.length < 4) { m.moves.push(mv); m.pp.push(maxPP(mv)); Snd.sfx('levelup'); return say(`${monName(m)} learned ${nm}!`); }
+  const k = await ask(`${monName(m)} wants to learn ${nm}. Forget a move for it?`, [...m.moves.map(x => tr(MOVES[x].name)), 'KEEP OLD'], { x: 0, y: 30, w: 160 });
+  if (k < 0 || k >= 4) return say(`${monName(m)} did not learn ${nm}.`);
+  const old = tr(MOVES[m.moves[k]].name); m.moves[k] = mv; m.pp[k] = maxPP(mv); await say(`1, 2 and... poof! ${monName(m)} forgot ${old} and learned ${nm}!`);
+}
+
+async function useItemInBattle(id, target) {
+  const it = ITEMS[id];
+  if (it.kind === 'ball') {
+    if (B.tr) { await say("You can't nab another agent's listing! That's poaching."); return 'noturn'; }
+    G.bag[id]--; await sayAuto(`Baden threw a ${it.name}!`);
+    Snd.sfx('throw'); for (let i = 0; i <= 20; i++) { B.ball = { x: 30 + 92 * i / 20, y: 70 - Math.sin(i / 20 * Math.PI) * 50 - 20 * i / 20 }; await wait(1); }
+    B.showE = false; await wait(10);
+    const M = maxHp(B.e), a = (3 * M - 2 * B.e.hp) * MONS[B.e.id].rate * it.catch * (B.e.st === 'slp' ? 2 : B.e.st ? 1.5 : 1) / (3 * M);
+    const ok = Math.random() < Math.min(1, a / 255 + 0.05);
+    const shakes = ok ? 3 : Math.floor(Math.random() * 3);
+    for (let s = 0; s < shakes; s++) { Snd.sfx('shake'); for (let i = 0; i < 16; i++) { B.ball.shake = Math.round(Math.sin(i / 16 * Math.PI * 2) * 3); await wait(1); } B.ball.shake = 0; await wait(14); }
+    if (ok) {
+      Snd.sfx('catch'); await say(`Gotcha! ${monName(B.e)} signed an exclusive agency agreement!`);
+      const where = giveMon(B.e);
+      if (where === 'box') await say(`Team's full, so ${monName(B.e)} went to Baden's STORAGE UNIT. No pets clause, but who's checking.`);
+      return 'caught';
+    }
+    B.ball = null; B.showE = true;
+    await sayAuto(['Argh! It broke the lease!', 'Nope! It got cold feet before settlement!', 'So close! It wanted a better offer!'][shakes]);
+    return 'turn';
+  }
+  if (it.kind === 'heal') {
+    if (target.hp <= 0 || target.hp >= maxHp(target)) { await say("It won't have any effect. Save it for later."); return 'noturn'; }
+    G.bag[id]--; const before = target.hp; target.hp = Math.min(maxHp(target), target.hp + it.heal); Snd.sfx('heal');
+    if (target === B.p) await hpSettle();
+    await sayAuto(`${monName(target)} recovered ${target.hp - before} HP!`); return 'turn';
+  }
+  if (it.kind === 'cure') {
+    if (!target.st || target.hp <= 0) { await say("It won't have any effect. Save it for later."); return 'noturn'; }
+    G.bag[id]--; target.st = null; target.slp = 0; Snd.sfx('heal'); await sayAuto(`${monName(target)} is feeling much better!`); return 'turn';
+  }
+  if (it.kind === 'battle') { G.bag[id]--; Snd.sfx('gavel'); B.st.p.atk = Math.min(6, B.st.p.atk + 2); await sayAuto(`Baden banged the ${it.name}! SOLD! ${monName(B.p)}'s ATTACK rose sharply!`); return 'turn'; }
+  await say("Now's not the time for that, Baden."); return 'noturn';
+}
+
+async function blackout() {
+  if (B.o.noLose) return;
+  const lost = Math.floor(G.money / 2); G.money -= lost;
+  await say(`Baden panicked and dropped $${lost} of commission on the way out!`);
+}
+
+function battleUpdate() {
+  if (!B) return;
+  const step = (d, a) => d === a ? d : d + Math.sign(a - d) * Math.min(Math.abs(a - d), Math.max(0.25, Math.abs(a - d) / 12));
+  B.dispE = step(B.dispE, B.e.hp); B.dispP = step(B.dispP, B.p.hp);
+  if (B.blink.e > 0) B.blink.e--; if (B.blink.p > 0) B.blink.p--;
+}
+function drawBattle(ctx) {
+  ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH);
+  ctx.fillStyle = PAL[1]; ctx.beginPath(); ctx.ellipse(B.eX + 24, 50, 30, 7, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(B.pX + 28, 94, 36, 6, 0, 0, 7); ctx.fill();
+  const draw = (cv, x, y, side) => {
+    if (B.blink[side] && (B.blink[side] >> 1) % 2) return; const f = B.faint[side];
+    ctx.drawImage(cv, 0, 0, 48, 48 - f, x, y + f, 48, 48 - f);
+  };
+  if (B.trainerSpr && B.tr) ctx.drawImage(charFrames(B.tr.spr)[0][0], 0, 0, 16, 16, B.eX, 2, 48, 48);
+  if (B.showE) draw(monSprite(B.e.id), B.eX - B.lunge.e, 2 + B.lunge.e, 'e');
+  if (!B.everOut) ctx.drawImage(charFrames('baden')[1][0], 0, 0, 16, 16, B.pX, 48, 48, 48);
+  if (B.showP) { B.everOut = true; draw(monSprite(B.p.id, true), B.pX + B.lunge.p, 48 - B.lunge.p, 'p'); }
+  if (B.ball) ctx.drawImage(charFrames('item')[0][0], Math.round(B.ball.x) + (B.ball.shake || 0), Math.round(B.ball.y));
+  // enemy info
+  if (B.showE || B.faint.e) {
+    text(ctx, monName(B.e), 4, 4); text(ctx, B.e.st ? STATUS[B.e.st] : 'Lv' + B.e.lv, 10, 14);
+    text(ctx, 'HP', 38, 14); hpBar(ctx, 52, 16, 44, B.dispE / maxHp(B.e));
+    ctx.fillStyle = PAL[3]; ctx.fillRect(4, 24, 94, 1); ctx.fillRect(97, 18, 1, 7);
+    if (B.o.wild && G.caught[B.e.id]) text(ctx, '*', 92, 4);
+  }
+  if (B.showP || B.faint.p) {
+    const n = monName(B.p); text(ctx, n, 158 - n.length * 6, 58); text(ctx, B.p.st ? STATUS[B.p.st] : 'Lv' + B.p.lv, 76, 68);
+    text(ctx, 'HP', 102, 68); hpBar(ctx, 116, 70, 42, B.dispP / maxHp(B.p));
+    const hs = Math.ceil(B.dispP) + '/' + maxHp(B.p); text(ctx, hs, 158 - hs.length * 6, 78);
+    ctx.fillStyle = PAL[3]; ctx.fillRect(78, 88, 80, 1); ctx.fillRect(78, 76, 1, 13);
+    const need = xpFor(B.p.lv + 1) - xpFor(B.p.lv), got = B.p.xp - xpFor(B.p.lv);
+    ctx.fillStyle = PAL[2]; ctx.fillRect(80, 90, Math.round(76 * Math.min(1, got / need)), 2);
+  }
+  if (B.prompt) { box(ctx, 0, 96, 160, 48); text(ctx, 'Your move,', 8, 106); text(ctx, 'Baden!', 8, 118); }
+  if (B.hoverMove != null && B.p.moves[B.hoverMove]) { const j = B.hoverMove, M = MOVES[B.p.moves[j]]; box(ctx, 80, 40, 80, 44); text(ctx, M.type, 88, 47); text(ctx, M.pow ? 'POW ' + M.pow : 'STATUS', 88, 58); text(ctx, 'PP ' + B.p.pp[j] + '/' + maxPP(B.p.moves[j]), 88, 69); }
+}
+
+// Evolution ("renovation") after battle. Hold B during the flicker to cancel, like the classics.
+async function evolveCheck(mons) {
+  for (const m of mons) {
+    const e = MONS[m.id].evo; if (!e || m.lv < e[0] || m.noEvo) continue;
+    const from = m.id, to = e[1]; let t = 0, done = false, cancel = false;
+    const scr = { update() { if (Input.held.b && t > 20 && !done) cancel = true; }, draw(ctx) {
+      ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH);
+      const id = done ? to : (t < 40 ? from : ((t >> (t > 130 ? 1 : t > 80 ? 2 : 3)) % 2 ? to : from));
+      ctx.drawImage(monSprite(id), 56, 24);
+    } };
+    UI.push(scr); Snd.music('heal');
+    await sayAuto(`What? ${monName(m)} is getting a renovation!`);
+    for (t = 0; t < 180 && !cancel; t++) await wait(1);
+    if (cancel) { m.noEvo = 1; removeUI(scr); await say(`Huh? ${monName(m)} cancelled the renovation. Council would never approve it anyway.`); Snd.music(curMap().music); continue; }
+    const oldName = monName(m), oldMax = maxHp(m); m.id = to; m.hp = Math.max(1, m.hp + maxHp(m) - oldMax); done = true; Snd.sfx('levelup');
+    G.caught[to] = G.seen[to] = 1;
+    await say(`Congratulations! ${oldName} evolved into ${monName(m)}! Value up 30%!`);
+    for (const [l, mv] of MONS[to].learn) if (l <= m.lv && !m.moves.includes(mv) && l >= e[0]) await learnMove(m, mv);
+    removeUI(scr); Snd.music(curMap().music);
+  }
+}
+
+// ---- 90_menus.js ----
+// ===== Menus: pause, team, bag, stats, options, shop, trainer card =====
+async function pauseMenu() {
+  Snd.sfx('select');
+  for (;;) {
+    const items = ['TEAM', 'BAG', 'BADEN', 'SAVE', 'OPTIONS', 'EXIT'];
+    const i = await choose(items, { x: 96, y: 0, w: 64, start: pauseMenu.last || 0 });
+    pauseMenu.last = Math.max(0, i);
+    if (i === 0) { if (!G.party.length) { await say("Baden doesn't have any beasts yet. Just a phone full of leads."); continue; } await teamScreen('menu'); }
+    else if (i === 1) await bagScreen('world');
+    else if (i === 2) await trainerCard();
+    else if (i === 3) { if ((await ask('Save your progress?')) === 0) { const ok = saveGame(); Snd.sfx(ok ? 'heal' : 'bump'); await say(ok ? "Baden saved the game. Signed, sealed, settled!" : 'Save failed. Is private browsing on?'); } }
+    else if (i === 4) await optionsMenu();
+    else return;
+  }
+}
+
+async function optionsMenu() {
+  let k = 0;
+  for (;;) {
+    const items = [`FAMILY MODE: ${Settings.family ? 'ON' : 'OFF'}`, `SOUND: ${Settings.mute ? 'OFF' : 'ON'}`, `TEXT: ${Settings.fast ? 'FAST' : 'NORMAL'}`, 'EXPORT SAVE', 'IMPORT SAVE', 'RESTORE BACKUP', 'BACK'];
+    k = await choose(items, { x: 0, y: 0, w: 160, start: k });
+    if (k === 0) { Settings.family = !Settings.family; saveSettings(); }
+    else if (k === 1) { Snd.setMute(!Settings.mute); syncMuteBtn(); }
+    else if (k === 2) { Settings.fast = !Settings.fast; saveSettings(); }
+    else if (k === 3) { if (!G && !loadGame()) { await say('No save yet. Start a game first!'); continue; } if (scene === 'world') saveGame(); await ioPanel('export'); }
+    else if (k === 4) { const r = await ioPanel('import'); if (r) { saveGame(); await say('Save imported! Restarting from that save...'); location.reload(); return; } }
+    else if (k === 5) {
+      const baks = readBackups(); if (!baks.length) { await say('No backups yet. They are made automatically as you play.'); continue; }
+      const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 60 ? m + ' MIN AGO' : Math.round(m / 60) + ' HR AGO'; };
+      const i = await choose([...baks.map(b => ago(b.t)), 'CANCEL'], { x: 16, y: 30, w: 128 });
+      if (i < 0 || i >= baks.length) continue;
+      if ((await ask('Load this backup? Unsaved progress will be lost.')) !== 0) continue;
+      if (loadFrom(baks[i].d)) { saveGame(); await say('Backup restored! Restarting...'); location.reload(); return; }
+      await say('That backup is damaged. Sorry!');
+    }
+    else return;
+  }
+}
+
+function teamScreen(mode) { // resolves to party index or -1
+  return new Promise(async res => {
+    let i = 0;
+    for (;;) {
+      const pick = await screen({
+        update(s) {
+          const n = G.party.length;
+          if (Input.take('up') && i > 0) { i--; Snd.sfx('blip'); }
+          if (Input.take('down') && i < n - 1) { i++; Snd.sfx('blip'); }
+          if (Input.take('a')) { Snd.sfx('select'); s.close(i); }
+          else if (Input.take('b') && mode !== 'forced') { Snd.sfx('back'); s.close(-1); }
+        },
+        draw(ctx) {
+          ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH);
+          G.party.forEach((m, k) => {
+            const y = 2 + k * 20; if (k === i) text(ctx, '>', 2, y + 2);
+            text(ctx, monName(m), 10, y + 1); text(ctx, m.st && m.hp > 0 ? STATUS[m.st] : 'Lv' + m.lv, 128, y + 1);
+            hpBar(ctx, 24, y + 12, 56, m.hp / maxHp(m)); text(ctx, m.hp > 0 ? m.hp + '/' + maxHp(m) : 'FAINTED', 86, y + 10);
+          });
+          box(ctx, 0, 122, 160, 22);
+          text(ctx, mode === 'use' ? 'Use on which beast?' : mode === 'forced' ? 'Send out who?' : 'Choose a beast.', 8, 129);
+        },
+      });
+      if (pick < 0 || mode === 'use' || mode === 'forced') return res(pick);
+      const opts = mode === 'battle' ? ['SEND OUT', 'STATS', 'CANCEL'] : ['STATS', 'SWAP', 'CANCEL'];
+      const c = await choose(opts, { x: 88, y: 60 });
+      const act = opts[c];
+      if (act === 'SEND OUT') return res(pick);
+      if (act === 'STATS') await statsScreen(G.party[pick]);
+      if (act === 'SWAP') {
+        let j = pick;
+        const tgt = await screen({
+          update(s) { if (Input.take('up') && j > 0) j--; if (Input.take('down') && j < G.party.length - 1) j++; if (Input.take('a')) s.close(j); else if (Input.take('b')) s.close(-1); },
+          draw(ctx) { ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH); G.party.forEach((m, k) => { const y = 2 + k * 20; text(ctx, k === j ? '>' : k === pick ? '`' : ' ', 2, y + 2); text(ctx, monName(m), 10, y + 1); text(ctx, 'Lv' + m.lv, 128, y + 1); }); box(ctx, 0, 122, 160, 22); text(ctx, 'Swap with which beast?', 8, 129); },
+        });
+        if (tgt >= 0 && tgt !== pick) { const t = G.party[tgt]; G.party[tgt] = G.party[pick]; G.party[pick] = t; Snd.sfx('select'); }
+      }
+    }
+  });
+}
+
+function statsScreen(m) {
+  return screen({
+    draw(ctx) {
+      const d = MONS[m.id]; ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH);
+      ctx.drawImage(monSprite(m.id), 2, 2); text(ctx, monName(m), 54, 4); text(ctx, 'Lv' + m.lv + '  ' + d.type, 54, 14);
+      text(ctx, `HP  ${m.hp}/${maxHp(m)}`, 54, 26); text(ctx, `ATK ${stat(m, 1)}  DEF ${stat(m, 2)}`, 54, 36); text(ctx, `SPD ${stat(m, 3)}  NEXT ${Math.max(0, xpFor(m.lv + 1) - m.xp)}`, 54, 46);
+      m.moves.forEach((mv, k) => text(ctx, '-' + tr(MOVES[mv].name), 4, 58 + k * 10));
+      box(ctx, 0, 100, 160, 44); wrap(tr(d.dex), 24).slice(0, 3).forEach((l, k) => text(ctx, l, 8, 106 + k * 11));
+    },
+  });
+}
+
+function bagList(mode) { return Object.keys(G.bag).filter(id => G.bag[id] > 0 && (mode !== 'battle' || ['ball', 'heal', 'cure', 'battle'].includes(ITEMS[id].kind))); }
+function bagScreen(mode) { // battle: resolves item id or null
+  return new Promise(async res => {
+    let i = 0;
+    for (;;) {
+      const list = bagList(mode);
+      const pick = await screen({
+        update(s) {
+          if (Input.take('up') && i > 0) { i--; Snd.sfx('blip'); }
+          if (Input.take('down') && i < list.length) { i++; Snd.sfx('blip'); }
+          if (Input.take('a')) { Snd.sfx('select'); s.close(i < list.length ? list[i] : null); } else if (Input.take('b')) { Snd.sfx('back'); s.close(null); }
+        },
+        draw(ctx) {
+          ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH); text(ctx, 'BAG', 4, 3); text(ctx, '$' + G.money, 156 - String(G.money).length * 6 - 6, 3);
+          ctx.fillStyle = PAL[3]; ctx.fillRect(0, 12, 160, 1);
+          const top = Math.max(0, i - 6);
+          [...list, 'CLOSE'].slice(top, top + 7).forEach((id, k) => {
+            const y = 16 + k * 11; if (top + k === i) text(ctx, '>', 2, y);
+            if (id === 'CLOSE') return text(ctx, 'CLOSE', 10, y);
+            text(ctx, ITEMS[id].name, 10, y); if (ITEMS[id].kind !== 'key') text(ctx, 'x' + G.bag[id], 136, y);
+          });
+          box(ctx, 0, 96, 160, 48);
+          if (i < list.length) wrap(tr(ITEMS[list[i]].desc), 24).slice(0, 3).forEach((l, k) => text(ctx, l, 8, 104 + k * 11));
+        },
+      });
+      if (!pick) return res(null);
+      if (mode === 'battle') return res(pick);
+      await useItemInWorld(pick);
+    }
+  });
+}
+async function useItemInWorld(id) {
+  const it = ITEMS[id];
+  if (it.kind === 'heal') {
+    if (!G.party.length) return say('No beasts to use it on. Baden drinks it himself. Delicious.');
+    const t = await teamScreen('use'); if (t < 0) return; const m = G.party[t];
+    if (m.hp <= 0) return say(`${monName(m)} has fainted. Take it to Nurse Vicki or Meredy.`);
+    if (m.hp >= maxHp(m)) return say("It won't have any effect.");
+    G.bag[id]--; const b = m.hp; m.hp = Math.min(maxHp(m), m.hp + it.heal); Snd.sfx('heal'); return say(`${monName(m)} recovered ${m.hp - b} HP!`);
+  }
+  if (it.kind === 'cure') {
+    if (!G.party.length) return say('No beasts to use it on.');
+    const t = await teamScreen('use'); if (t < 0) return; const m = G.party[t];
+    if (!m.st || m.hp <= 0) return say("It won't have any effect.");
+    G.bag[id]--; m.st = null; m.slp = 0; Snd.sfx('heal'); return say(`${monName(m)} is feeling much better!`);
+  }
+  if (id === 'cards') return say(P('Baden handed out a business card. "Call me for a good time... to sell!" Nobody called. Yet.', 'Baden handed out a business card. "Sold by Baden!" Networking!'));
+  if (id === 'brick') return say("Gracie said: use it at the broken bridge on Beach Road! Face the gap and press A.");
+  if (id === 'tennisball') { if (G.flags.cookie) { Snd.sfx('woof'); return say('Baden threw the TENNIS BALL. Cookie fetched it! Then dropped it. Then wanted it thrown again.'); } return say("It's Cookie's. Better give it back."); }
+  return say("Now's not the time for that, Baden.");
+}
+
+function trainerCard() {
+  return screen({
+    draw(ctx) {
+      ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH); box(ctx, 0, 0, 160, 144);
+      ctx.drawImage(charFrames('baden')[0][0], 0, 0, 16, 16, 108, 12, 32, 32);
+      text(ctx, 'BADEN LUCAS', 10, 12); text(ctx, 'DIRECTOR,', 10, 24); text(ctx, 'LUCAS REAL', 10, 34); text(ctx, 'BEASTATE', 10, 44);
+      text(ctx, 'COMMISSION $' + G.money, 10, 62); text(ctx, 'BEASTS CAUGHT ' + Object.keys(G.caught).length + '/' + Object.keys(MONS).length, 10, 74);
+      const t = Math.floor(G.time / 60); text(ctx, `TIME ${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`, 10, 86);
+      text(ctx, 'BADGES', 10, 104); if (G.badges) { ctx.drawImage(TILE_CV.G[0], 56, 100); text(ctx, 'HOLE-IN-ONE', 76, 104); } else text(ctx, 'none yet', 56, 104);
+      text(ctx, tr(P('"Size of the deal matters."', '"Sold by Baden!"')), 6, 124);
+    },
+  });
+}
+
+async function shop() {
+  for (;;) {
+    const i = await ask(`What're ya buyin'? You've got $${G.money}.`, [...SHOP.map(id => ITEMS[id].name + ' $' + ITEMS[id].price), 'DONE'], { x: 0, y: 0, w: 160 });
+    if (i < 0 || i >= SHOP.length) return say('SHAZZA: Ta, love. Come again!');
+    const it = ITEMS[SHOP[i]];
+    if (G.money < it.price) { await say("SHAZZA: Bit short there, love. Sell a unit first!"); continue; }
+    G.money -= it.price; G.bag[SHOP[i]] = (G.bag[SHOP[i]] || 0) + 1; Snd.sfx('item'); await say(`Baden bought a ${it.name}!`);
+  }
+}
+
+// HTML overlay for save export/import (real taps are needed for clipboard/file access on iOS)
+function ioPanel(mode) {
+  return new Promise(res => {
+    const $ = id => document.getElementById(id), io = $('io'), ta = $('ioText');
+    const show = (id, on) => $(id).style.display = on ? '' : 'none';
+    io.classList.add('show'); for (const k in Input.held) Input.held[k] = false;
+    const done = v => { io.classList.remove('show'); ['ioCopy', 'ioFile', 'ioLoad', 'ioClose', 'ioPick'].forEach(id => { $(id).onclick = null; $(id).onchange = null; }); res(v); };
+    if (mode === 'export') {
+      ta.value = exportCode(); ta.readOnly = true;
+      $('ioMsg').textContent = 'Your save code. Copy it somewhere safe (Notes, email to yourself), or save it as a file. Import it on any device.';
+      show('ioCopy', 1); show('ioFile', 1); show('ioPickL', 0); show('ioLoad', 0);
+      $('ioCopy').onclick = async () => { ta.select(); let ok = false; try { await navigator.clipboard.writeText(ta.value); ok = true; } catch (e) { try { ok = document.execCommand('copy'); } catch (_) { } } $('ioMsg').textContent = ok ? 'Copied! Paste it into Notes to keep it safe.' : 'Select the text and copy it manually.'; };
+      $('ioFile').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ta.value], { type: 'text/plain' })); a.download = 'get-em-baden-save-' + new Date().toISOString().slice(0, 10) + '.txt'; document.body.appendChild(a); a.click(); a.remove(); };
+    } else {
+      ta.value = ''; ta.readOnly = false;
+      $('ioMsg').textContent = 'Paste a save code below, or choose a save file. This replaces your current game.';
+      show('ioCopy', 0); show('ioFile', 0); show('ioPickL', 1); show('ioLoad', 1);
+      $('ioPick').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { ta.value = r.result; $('ioMsg').textContent = 'File loaded. Tap LOAD IT.'; }; r.readAsText(f); };
+      $('ioLoad').onclick = () => { if (importCode(ta.value)) done(true); else $('ioMsg').textContent = "That doesn't look like a valid save code. Check you copied all of it."; };
+    }
+    $('ioClose').onclick = () => done(false);
+  });
+}
+
+// ---- 95_maps.js ----
+// ===== Maps, NPCs, signs and story scripts =====
+// Tile legend: T tree, ~ water, . grass, , path, g tall grass, : sand, f flowers, | bridge, B broken bridge,
+// = fence, S sign, C chess board, E EV charger, R roof, W wall, w window, D door,
+// interiors: # wall, _ floor, X exit mat, k shelf, b bed, t table, c counter, P plant, F fridge, v TV, H heal machine, A auction board, G golf flag
+const door = (to, x, y, dir = 1) => ({ to, x, y, dir });
+function exits(xs, y, to, ty, dir) { const o = {}; xs.forEach(x => o[x + ',' + y] = door(to, x, ty, dir)); return o; }
+const ROUTE_TABLE = [['chookle', 3, 5, 30], ['binfluencer', 3, 5, 25], ['mozzling', 3, 5, 20], ['thongsnake', 4, 6, 12], ['budgie', 4, 6, 9], ['voltamander', 5, 6, 4], ['dropsy', 5, 6, 3]];
+const GLADE_TABLE = [['cookiedoo', 6, 8, 40], ['voltamander', 6, 7, 30], ['dropsy', 6, 8, 30]];
+
+const MAPS = {
+  apt: { name: "BADEN'S APARTMENT", music: 'town', tiles: [
+    '##########',
+    '#Fk__vv_b#',
+    '#________#',
+    '#__tt____#',
+    '#________#',
+    '#________#',
+    '#P______P#',
+    '####XX####'],
+    warps: { '4,7': door('town1', 4, 8, 0), '5,7': door('town1', 4, 8, 0) },
+    signs: {
+      '1,1': "The fridge. Meredy has labelled everything. There's a note: 'BADEN - EAT A VEGETABLE.'",
+      '2,1': "Chess puzzle books, golf mags and 'Negotiating With Children: A Losing Battle'.",
+      '5,1': 'The footy replay is on. The umpire still needs glasses.', '6,1': 'The footy replay is on. The umpire still needs glasses.',
+      '8,1': "Baden's bed. Still warm. Cookie has definitely been in it again.",
+      '3,3': "Gracie's block build: a cafe with a rooftop pool. Excellent use of space. Very marketable.", '4,3': "Gracie's block build: a cafe with a rooftop pool. Excellent use of space. Very marketable.",
+    },
+    npcs: [
+      { id: 'lucy', x: 2, y: 5, dir: 3, spr: 'lucy', name: 'LUCY', talk: lucyTalk },
+      { id: 'gracie', x: 6, y: 4, dir: 2, spr: 'gracie', name: 'GRACIE', talk: gracieTalk },
+      { id: 'cookie', x: 6, y: 2, dir: 0, spr: 'dog', name: 'COOKIE', talk: cookieJoin, cond: () => !G.flags.cookie },
+    ] },
+
+  lab: { name: 'BEASTOLOGY LAB', music: 'town', tiles: [
+    '##########',
+    '#kkk__kkk#',
+    '#________#',
+    '#__ttt___#',
+    '#________#',
+    '#________#',
+    '#P______P#',
+    '#________#',
+    '####XX####'],
+    warps: { '4,8': door('town1', 4, 13, 0), '5,8': door('town1', 4, 13, 0) },
+    signs: { '1,1': "BEASTOLOGY books. And one called 'Getting Your Husband Off His Phone'.", '2,1': 'A dog-eared field guide: "BEASTS OF THE BAYSIDE".', '3,1': 'A dog-eared field guide: "BEASTS OF THE BAYSIDE".',
+      '6,1': "Research notes. Margin doodle: 'Baden + Meredy' in a love heart. Cute.", '7,1': 'Research notes. Lots of graphs.', '8,1': 'Research notes. Lots of graphs.' },
+    npcs: [
+      { id: 'meredy', x: 7, y: 2, dir: 0, spr: 'meredy', name: 'QUEEN MEREDY', talk: meredyTalk },
+      { id: 'lenny', x: 2, y: 5, dir: 3, spr: 'lenny', name: 'LENNY', talk: lennyTalk },
+      ...STARTERS.map((id, i) => ({ id: 'st_' + id, x: 3 + i, y: 3, dir: 0, spr: 'item', fixed: 1, talk: () => starterPick(id),
+        cond: () => !G.flags.starter || (G.flags.starterId !== id && G.flags.rivalId !== id) })),
+    ] },
+
+  office: { name: 'LUCAS REAL BEASTATE', music: 'town', noDog: 1, tiles: [
+    '##########',
+    '#AA_kk_PP#',
+    '#________#',
+    '#_cc__cc_#',
+    '#________#',
+    '#________#',
+    '#P______P#',
+    '####XX####'],
+    warps: { '4,7': door('town1', 18, 8, 0), '5,7': door('town1', 18, 8, 0) },
+    signs: { '1,1': 'AUCTION RESULTS: 2-bed in Docklands SOLD for $1.2m. Buyers mainly came for the car space.', '2,1': "THIS MONTH'S TOP AGENT: BADEN. Again. Shane has drawn a moustache on the photo.",
+      '4,1': "Contracts, contracts, and a copy of 'Real Estate For Dummies'. Shane's.", '5,1': "Contracts, contracts, and a copy of 'Real Estate For Dummies'. Shane's.",
+      '3,3': "Baden's desk. A framed photo of the family and Cookie. And 47 unread emails.", '7,3': "Shane's desk. Mostly energy drink cans.", '6,3': "Shane's desk. Mostly energy drink cans." },
+    npcs: [
+      { id: 'jazz', x: 2, y: 2, dir: 0, spr: 'woman', name: 'JAZZ', talk: [P("Morning boss! Your 10am wants to 'inspect the master suite' again. Third time this week. Wink wink.", 'Morning boss! Your 10am wants to inspect the master suite again. Third time this week!'), "Oh, and Trev's in. He wants to battle. He always wants to battle."] },
+      { id: 'shane', x: 7, y: 2, dir: 0, spr: 'man', name: 'SHANE', talk: [P("Boss, I told the vendor we'd get top dollar. She said that's what her ex promised too.", "Boss, I told the vendor we'd get top dollar. Fingers crossed!")] },
+      { id: 'trev', x: 1, y: 4, dir: 3, spr: 'auctioneer', name: 'TREV', trainer: { range: 0, team: [['binfluencer', 5], ['chookle', 6]], money: 400,
+        intro: P("Who'll give me fifty?! FIFTY! Do I hear sixty?! Ohh, I'm getting excited... somebody hose me down! Battle me, Baden!", "Who'll give me fifty?! FIFTY! Do I hear sixty?! Ohh, I'm getting excited! Battle me, Baden!"),
+        lose: P("SOLD! To the bloke in the nice suit. I've gone all weak at the knees.", 'SOLD! To the bloke in the nice suit!'),
+        after: P('Going once, going twice... gone for a lie down.', 'Going once, going twice... gone for a coffee.'),
+        onWin: async () => { await say(tr(P('TREV: Take my spare AUCTION GAVELS. Bang one in battle. Hard. They like it hard.', 'TREV: Take my spare AUCTION GAVELS. Bang one in battle to fire up your beast!'))); await giveItem('gavel', 2); } } },
+    ] },
+
+  steak: { name: P('THE RUMP ROOM', 'THE STEAK OUT'), music: 'town', noDog: 1, tiles: [
+    '##########',
+    '#cccccc_P#',
+    '#________#',
+    '#_tt__tt_#',
+    '#________#',
+    '#_tt__tt_#',
+    '#________#',
+    '####XX####'],
+    warps: { '4,7': door('town1', 19, 14, 0), '5,7': door('town1', 19, 14, 0) },
+    signs: Object.assign({}, ...[1, 2, 3, 4, 5, 6].map(x => ({ [x + ',1']: 'The bar. Sticky. Smells like a Friday.' })), ...[[2, 3], [3, 3], [6, 3], [7, 3], [2, 5], [3, 5], [6, 5], [7, 5]].map(([x, y]) => ({ [x + ',' + y]: 'Someone left half a parmy. Respect the parmy.' }))),
+    npcs: [
+      { id: 'gordon', x: 7, y: 1, dir: 0, spr: 'chef', name: 'GORDON RUMSEY', talk: gordonTalk },
+      { id: 'macca', x: 1, y: 4, dir: 3, spr: 'man', name: 'MACCA', talk: [P("Been coming here 20 years. The waitress still won't give me her number. Just the bill.", "Been coming here 20 years. Still haven't finished the 1kg tomahawk.")] },
+      { id: 'bev', x: 8, y: 4, dir: 2, spr: 'woman', name: 'BEV', talk: [P('I like my steak like I like my men. Thick, juicy, and a little bit tender in the middle.', 'I like my steak like I like my holidays. Long, and well done.')] },
+      { id: 'steve', x: 8, y: 6, dir: 2, spr: 'tradie', name: 'STEVE', trainer: { range: 3, team: [['thongsnake', 6], ['chookle', 6]], money: 350,
+        intro: P("Oi! You looking at my meat? ...My STEAK, mate! Let's go!", "Oi! You looking at my steak? Let's go!"), lose: "Mate. I've been tenderised.",
+        after: P("Don't tell the missus I was here. I told her I was at the gym.", "Don't tell anyone I ordered the salad.") } },
+    ] },
+
+  town1: { name: 'DOCKLANDIA', music: 'town', outdoor: 1, tiles: [
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'T~~~~~~~~~~~~~~~~~~~~~~T',
+    'T~~~~~~~~~~|~~~~~~~~~~~T',
+    'T,,,,,,,,,,|,,,,,,,,,,,T',
+    'T,RRRRRR,,,,,,,RRRRRRR.T',
+    'T,RRRRRR,f..f,,RRRRRRR.T',
+    'T,WwWWwW,.....,WwWWWwW.T',
+    'T,WWDWWW,S....,WWWDWWW.T',
+    'T,,,,,,,,,,,,,,,,,,,,,.T',
+    'T..f.....,..C....E....ST',
+    'T.RRRRR..,.............T',
+    'T.RRRRR..,..SRRR.RRRRR.T',
+    'T.WwDwW..,...WDWSRRRRR.T',
+    'T........,......SWwDwW.T',
+    'T..f.....,.............T',
+    'TTTTTTTT.,.TTTTTTTTTTTTT',
+    'TTTTTTTT.,.TTTTTTTTTTTTT'],
+    warps: Object.assign({ '4,7': door('apt', 4, 6), '18,7': door('office', 4, 6), '4,12': door('lab', 4, 7), '19,13': door('steak', 4, 6), '14,12': door('casino', 4, 7) }, exits([8, 9, 10], 16, 'route1', 1, 0)),
+    signs: {
+      '9,7': 'DOCKLANDIA. Great views. Even greater body corporate fees.',
+      '3,7': "DOCKSIDE TOWER, Apt 4207. Strata says no beasts. Strata can get stuffed.", '5,7': "DOCKSIDE TOWER, Apt 4207. Strata says no beasts. Strata can get stuffed.",
+      '17,7': "LUCAS REAL BEASTATE. Director: BADEN LUCAS. If it's not SOLD, it's not Baden.", '19,7': "LUCAS REAL BEASTATE. Director: BADEN LUCAS. If it's not SOLD, it's not Baden.",
+      '3,12': "QUEEN MEREDY'S BEASTOLOGY LAB. Please wipe your feet. Yes, you, Baden.", '5,12': "QUEEN MEREDY'S BEASTOLOGY LAB. Please wipe your feet. Yes, you, Baden.",
+      '12,11': 'SOUTH: BEACH ROAD to MUMINGTON. Beware of lycra.',
+      '16,13': P('THE RUMP ROOM. We like it rare. Ask about the 1kg tomahawk... if you think you can handle it.', 'THE STEAK OUT. Steaks so good they should be illegal.'),
+      '12,9': P("CHESS PUZZLE: White to play, mate in one. Easier than finding a mate at the Rump Room on a Friday.", "CHESS PUZZLE: White to play, mate in one. Hint: it's the queen. It's always the queen."),
+      '16,12': P('CLOWN CASINO. Open 24/7. Like a servo, but you leave with less.', 'CLOWN CASINO. Open 24/7. Grown-ups only!'),
+      '22,9': "TRAM STOP - ROUTE 86. Next tram: whenever it feels like it. Tap on with your MYKI-NOT card. It won't read. It never reads.",
+      '17,9': "An EV fast charger. Baden's car is charged. Range anxiety: none. Parking anxiety: severe.",
+    },
+    hidden: [{ id: 'harbour', x: 11, y: 1, item: 'money', n: 500, text: "Something's floating in the harbour... Baden fished out $500! Probably someone's rental bond." }],
+    triggers: [{ x: 8, y: 15, w: 3, cond: () => !G.flags.starter, run: async () => {
+      Snd.sfx('alert'); await say("Baden's phone is ringing..."); await sayAll(["Baden! Don't you DARE go into the long grass without a beast!", "Come to my LAB first. I've got a work perk for you. Love you!"], 'QUEEN MEREDY');
+      await forceStep(1); } }],
+    npcs: [
+      { id: 'trent', x: 6, y: 9, dir: 0, spr: 'tradie', name: 'TRENT', talk: [P("Oi Baden! I'm a tradie. Got the biggest tool belt in Docklands. The ladies love a bloke who can screw in a light bulb.", "Oi Baden! I'm a tradie. I'll fix your gutters for a pie and a sausage roll.")] },
+      { id: 'duncan', x: 14, y: 14, dir: 2, spr: 'dev', name: 'DUNCAN', talk: [P("I'm a developer. Getting forty storeys erect by Christmas. Size matters in this town, mate.", "I'm a developer. Forty storeys by Christmas! Views of the views!"), 'Want to sell them for me? Off the plan. Very off the plan.'] },
+      { id: 'elon', x: 18, y: 9, dir: 2, spr: 'tech', name: 'ELON MUSKRAT', talk: ["This charger's mine. That charger's mine. I'd buy all of Docklands but the body corporate won't return my calls.", 'Next week I am putting a charger on the moon. Parking will still be $40.'] },
+      { id: 'jess', x: 20, y: 8, dir: 2, spr: 'woman', name: 'JESS', talk: [P('Morning Baden! I jog past your office every day. Purely for the... views.', 'Morning Baden! I jog past your office every day. Love the window display!')] },
+    ] },
+
+  route1: { name: 'BEACH ROAD', music: 'route', outdoor: 1, tiles: [
+    'TTTTTTTT,,,TTTTTTTTT',
+    'TTTTTTTT,,,TTTTTTTTT',
+    'T.......,,,.....S..T',
+    'T..ggggg,,,gggg....T',
+    'T..ggggg,,,gggg....T',
+    'T..ggggg,,,gggg....T',
+    'T.......,,,........T',
+    'TTTTT...,,,....TTTTT',
+    'Tggg~...,,,.....gggT',
+    'Tggg~...,,,.....gggT',
+    'Tgfg~.S.,,,.....gggT',
+    'TgggB...,,,.....gggT',
+    'Tggg~...,,,........T',
+    'Tfgg~...,,,........T',
+    'TTTTT...,,,....TTTTT',
+    'T.......,,,........T',
+    'T.gggggg,,,gggggg..T',
+    'T.gggggg,,,gggggg..T',
+    'T.gggggg,,,gggggg..T',
+    'T.......,,,........T',
+    'T..TT...,,,...TT...T',
+    'T..TT...,,,...TT...T',
+    'T.......,,,........T',
+    'T..gggg.,,,.gggg...T',
+    'T..gggg.,,,.gggg...T',
+    'T.......,,,....S...T',
+    'TTTTTTTT,,,TTTTTTTTT',
+    'TTTTTTTT,,,TTTTTTTTT'],
+    warps: Object.assign(exits([8, 9, 10], 0, 'town1', 15, 1), exits([8, 9, 10], 27, 'town2', 1, 0)),
+    enc: { rate: 0.1, table: ROUTE_TABLE, zones: [{ x: 1, y: 8, w: 3, h: 6, rate: 0.15, table: GLADE_TABLE }] },
+    signs: { '16,2': 'BEACH ROAD. Home of cyclists, dog walkers and absolutely zero parking.', '6,10': "DANGER: DROP BEARS. Don't look up. Vegemite behind the ears may help.", '15,25': 'MUMINGTON just ahead. Population: mostly mums. And seagulls.' },
+    hidden: [{ id: 'tree', x: 3, y: 20, item: 'flatwhite', n: 2, text: 'Hidden in the tree: two FLAT WHITES! Still warm. Somehow.' }],
+    npcs: [
+      { id: 'noreen', x: 12, y: 6, dir: 2, spr: 'lady', name: 'NOREEN', trainer: { range: 4, team: [['chookle', 4], ['mozzling', 4]], money: 150,
+        intro: P("Ooh, an agent! I go to every open inspection, love. Never buying. I just like a good rummage through other people's drawers!", 'Ooh, an agent! I go to every open inspection, love. Never buying. I just like to check out the pantry!'),
+        lose: P("Fine! I'll see myself out. After I check the en suite.", "Fine! I'll see myself out. After I grab a free lolly."),
+        after: "Is it still available? What's the body corp? Does it have a dishwasher? ...I'm not buying." } },
+      { id: 'larry', x: 7, y: 12, dir: 3, spr: 'cyclist', name: 'LYCRA LARRY', trainer: { range: 4, team: [['voltamander', 5], ['budgie', 5]], money: 200,
+        intro: P("BEACH ROAD IS MY ROAD! My lycra's so tight you can see what I had for breakfast!", "BEACH ROAD IS MY ROAD! My lycra is so aerodynamic I'm basically a missile!"),
+        lose: P('Ow. Right in the chamois.', "Ow. I've got a flat."),
+        after: P("Coffee stop? Double ristretto and an ice pack for the undercarriage, thanks.", 'Coffee stop? Double ristretto and a banana, thanks.') } },
+      { id: 'hugh', x: 17, y: 19, dir: 2, spr: 'gymbro', name: 'HUGH JACKED', trainer: { range: 7, team: [['dropsy', 6], ['thongsnake', 6]], money: 250,
+        intro: "G'day! I'm HUGH JACKED. Do you even lift, mate? Every day is leg day!", lose: 'My pump! You ruined my pump!',
+        after: P('My protein shake is 90% creatine and 10% bad decisions.', 'My protein shake is 90% protein and 10% banana.') } },
+      { id: 'dazza', x: 4, y: 22, dir: 3, spr: 'golfer', name: 'DAZZA', trainer: { range: 4, team: [['budgie', 6], ['chookle', 7]], money: 250,
+        intro: P("Oi! I've got a long shaft and a firm grip. Ask anyone at the club! FORE!", "Oi! I've got a brand new driver and a firm grip! FORE!"),
+        lose: P('Shanked it. Story of my life, mate.', 'Shanked it into the water again.'),
+        after: P("My handicap? Mate, I've got several. Mostly the beers.", "My handicap? Mate, I've got several. Mostly my swing.") } },
+      { id: 'pie', x: 18, y: 2, item: 'meatpie', n: 1, spr: 'item', dir: 0 },
+      { id: 'stash', x: 1, y: 13, item: 'money', n: 1000, spr: 'item', dir: 0, msg: 'A SECRET STASH! Baden found $1000 in an old esky. Finders keepers!' },
+    ] },
+
+  town2: { name: 'MUMINGTON', music: 'town', outdoor: 1, tiles: [
+    'TTTTTTTT,,,TTTTTTT:~~~',
+    'T.......,,,......::~~~',
+    'T.RRRRR.,,,.RRRRR.::~~',
+    'T.RRRRR.,,,.RRRRR.::~~',
+    'T.WwDwW.,,,.WwDwW.::~~',
+    'T..S....,,,..S....::~~',
+    'T,,,,,,,,,,,,,,,,,::~~',
+    'T..f....f.....f...::~~',
+    'T....=====.......:::~~',
+    'T....fffff........:~~~',
+    'T.RRRR............:~~~',
+    'T.WwDW.......S....:~~~',
+    'T................::~~~',
+    'TTTTTTTTTTTTTTTTT:::~~',
+    'TTTTTTTTTTTTTTTTTT::~~'],
+    warps: Object.assign({ '4,4': door('heal', 4, 6), '14,4': door('golf', 4, 7) }, exits([8, 9, 10], 0, 'route1', 26, 1)),
+    signs: { '3,5': "VICKI'S HEAL HUT. Beasts healed free. Hugs compulsory.", '13,5': 'FAIRWAY GOLF GYM. Leader: CHIP SHOTWELL. Collared shirts required.',
+      '13,11': 'FOR SALE - LUCAS REAL BEASTATE. Sea glimpses (if you stand on the toilet).', '4,11': "Locked. Open inspection: Saturday 10:00 to 10:15. Don't be late." },
+    hidden: [{ id: 'beach', x: 19, y: 13, item: 'money', n: 300, text: P('Baden dug up a pair of BUDGIE SMUGGLERS... with $300 in the pocket! He put the smugglers back.', 'Baden dug something up in the sand... $300 in loose change!') }],
+    npcs: [
+      { id: 'kylie', x: 18, y: 7, dir: 2, spr: 'popstar', name: 'KYLIE MINNOW', talk: ['I should be so lucky, lucky, lucky, lucky... to find a car park at the beach!'] },
+      { id: 'brad', x: 18, y: 11, dir: 2, spr: 'lifeguard', name: 'BONDI BRAD', trainer: { range: 4, team: [['budgie', 7], ['mozzling', 7]], money: 300,
+        intro: P("I've got the biggest rescue tube on the beach, mate. Let's see what you're packing!", "Swim between the flags, mate! Now let's battle!"),
+        lose: P('Well. That was a bit of a dry spell.', 'Righto. Back up the tower.'), after: P('Need mouth-to-mouth? ...No? Suit yourself.', 'Slip, slop, slap, mate! Sunscreen!') } },
+      { id: 'glen', x: 16, y: 12, dir: 2, spr: 'glen', name: 'KING GLEN', talk: glenTalk },
+      { id: 'daryl', x: 6, y: 7, dir: 0, spr: 'man', name: 'DARYL', talk: darylTalk },
+      { id: 'pam', x: 12, y: 9, dir: 0, spr: 'lady', name: 'PAM', talk: ['Your mum talks about you nonstop, Baden. Mostly about whether you are eating enough.'] },
+    ] },
+
+  heal: { name: "VICKI'S HEAL HUT", music: 'heal', tiles: [
+    '##########',
+    '#H_______#',
+    '#cccccccc#',
+    '#________#',
+    '#________#',
+    '#_t____t_#',
+    '#P______P#',
+    '####XX####'],
+    warps: { '4,7': door('town2', 4, 5, 0), '5,7': door('town2', 4, 5, 0) },
+    signs: { '1,2': "Nana Vicki's HEAL-O-MATIC 3000. Smells like lavender and scones.", '2,5': 'A bowl of lollies. Rose has had at least six.', '7,5': 'Magazines from 2009.' },
+    npcs: [
+      { id: 'vicki', x: 3, y: 1, dir: 0, spr: 'vicki', name: 'VICKI', talk: vickiTalk },
+      { id: 'shazza', x: 7, y: 1, dir: 0, spr: 'woman', name: 'SHAZZA', talk: shazzaTalk },
+      { id: 'rose', x: 2, y: 4, dir: 3, spr: 'rose', name: 'ROSE', talk: roseTalk },
+    ] },
+
+  casino: { name: 'CLOWN CASINO', music: 'town', noDog: 1, tiles: [
+    '##########',
+    '#kkkD#kkk#',
+    '#________#',
+    '#_tt__tt_#',
+    '#________#',
+    '#cc______#',
+    '#________#',
+    '#P______P#',
+    '####XX####'],
+    warps: { '4,8': door('town1', 14, 13, 0), '5,8': door('town1', 14, 13, 0) },
+    signs: Object.assign({ '1,5': P('The CLOWN CASINO bar. $19 beers. The house always wins. So does the barman.', 'The CLOWN CASINO bar. $19 lemonades. The house always wins.'), '2,5': P('The CLOWN CASINO bar. $19 beers. The house always wins. So does the barman.', 'The CLOWN CASINO bar. $19 lemonades. The house always wins.'),
+      '2,3': 'A blackjack table. Someone has written "HIT ME" on a napkin. Bold.', '3,3': 'A blackjack table. Someone has written "HIT ME" on a napkin. Bold.', '6,3': 'Roulette. Baden always bets on 42. Like his apartment number. Sort of.', '7,3': 'Roulette. Baden always bets on 42. Like his apartment number. Sort of.' },
+      ...[1, 2, 3, 6, 7, 8].map(x => ({ [x + ',1']: playPokies }))),
+    npcs: [
+      { id: 'kev', x: 4, y: 2, dir: 0, spr: 'bouncer', name: 'BIG KEV', talk: kevTalk },
+      { id: 'candi', x: 5, y: 2, dir: 0, spr: 'woman', name: 'CANDI', talk: [P("I'm on my break, love. I dance in the VELVET ROPE LOUNGE. Tips go in the garter, not the pokies.", "I'm on my break, love. I'm a magician's assistant. I get sawn in half twice a night.")] },
+      { id: 'deb', x: 7, y: 4, dir: 2, spr: 'croupier', name: 'DEALER DEB', trainer: { range: 3, team: [['voltamander', 8], ['binfluencer', 9]], money: 600,
+        intro: P("Place your bets, sweetheart. I've handled bigger stacks than yours.", 'Place your bets! The house always wins!'), lose: 'The house... LOST? Security! ...Fine. Here is your payout.',
+        after: P('Blackjack pays three to two. Bad decisions pay nothing. Ask the bucks party.', 'Blackjack pays three to two. Lemonade is free for winners.') } },
+      { id: 'gazza', x: 2, y: 6, dir: 3, spr: 'buck', name: 'GAZZA', trainer: { range: 4, team: [['budgie', 8], ['thongsnake', 8]], money: 400,
+        intro: P("It's my BUCKS NIGHT! The boys dressed me as a giant budgie smuggler. Last night of freedom! BATTLE!", "It's my BUCKS NIGHT! The boys dressed me as a giant budgie. Last night of freedom! BATTLE!"),
+        lose: "Ah well. The boys are gonna shave my eyebrows either way.",
+        after: P("The best man booked me a 'surprise' in the VIP lounge. Pretty sure it's my future mother-in-law.", 'The best man booked me a surprise. Pretty sure it is a karaoke machine.') } },
+    ] },
+
+  golf: { name: 'FAIRWAY GOLF GYM', music: 'route', noDog: 1, tiles: [
+    '##########',
+    '#P__G___P#',
+    '#________#',
+    '#________#',
+    '#________#',
+    '#________#',
+    '#________#',
+    '#________#',
+    '####XX####'],
+    warps: { '4,8': door('town2', 14, 5, 0), '5,8': door('town2', 14, 5, 0) },
+    signs: { '4,1': "A putting green. Lenny's best score on this hole: 47. He counted twice." },
+    npcs: [
+      { id: 'cate', x: 1, y: 5, dir: 3, spr: 'golfer', name: 'CADDIE CATE', trainer: { range: 6, team: [['chookle', 7], ['binfluencer', 8]], money: 350,
+        intro: P("Welcome to the Fairway! Members only... but I'll let you play through if you can handle my balls. GOLF balls!", "Welcome to the Fairway! Members only... but I'll let you play through if you can beat me!"),
+        lose: P('Nice stroke, Baden!', 'Nice swing, Baden!'), after: "Chip's up the back. He's been practising his putting. And his speech." } },
+      { id: 'chip', x: 5, y: 2, dir: 0, spr: 'golfer', name: 'CHIP SHOTWELL', trainer: { range: 0, team: [['dropsy', 9], ['bogeyman', 11]], money: 1500,
+        intro: [P("I'm CHIP SHOTWELL, leader of the FAIRWAY GYM. I've played eighteen holes with every bloke in Mumington. Tee off!", "I'm CHIP SHOTWELL, leader of the FAIRWAY GYM. Par for the course today is a flogging! Tee off!")],
+        lose: 'A hole in one... on ME? Fair dinkum. You have earned the HOLE-IN-ONE BADGE!',
+        after: P('My wife says I spend too much time with my balls. GOLF balls!', 'My wife says I spend too much time at the club. She is not wrong.'),
+        onWin: gymWin } },
+    ] },
+};
+for (const k in MAPS) { const m = MAPS[k]; m.id = k; m.h = m.tiles.length; m.w = m.tiles[0].length; m.npcs = m.npcs || []; m.enc = m.enc || {}; m.warps = m.warps || {}; }
+
+const TILE_SCRIPTS = {
+  async B() {
+    if (G.bag.brick) { Snd.sfx('gavel'); await say("Baden used GRACIE'S BUILDING BRICK!"); G.flags.bridge = 1; Snd.sfx('item'); return say('Click! The bridge is fixed! Gracie would be SO proud.'); }
+    return say('The bridge is broken. One brick is missing. If only someone in the family loved building things...');
+  },
+};
+async function forceStep(d) { G.dir = d; const fl = busy; startStep(d); while (W.moving) await wait(1); }
+
+// ---- Story scripts ----
+async function lucyTalk() {
+  if (!G.flags.lucy) {
+    await sayAll(["Hey Dad. Princess Lucy here. FYI, cool princesses don't do pink anymore.", "Anyway. I decorated these for you. GLITTER BOXES. They catch beasts twice as good."], 'LUCY');
+    await giveItem('glitterbox', 3); G.flags.lucy = 1;
+    return sayAll(['Tip: SIZZLE beats SPROUT. SPROUT beats SPLASH. SPLASH beats SIZZLE. ZAP zaps SPLASH. Easy.'], 'LUCY');
+  }
+  if (!G.party.length) return sayAll(["You don't even have a beast yet? Go see Mum at the LAB. Duh."], 'LUCY');
+  const m = G.party[Math.floor(Math.random() * G.party.length)];
+  await sayAll([`Let me rate your team... ${monName(m)}? Cool. I give it a ${7 + Math.floor(Math.random() * 4)} out of 10.`, 'Pro tip: weaken a wild beast first, THEN throw a box.'], 'LUCY');
+}
+async function gracieTalk() {
+  if (!G.flags.gracie) {
+    await sayAll(["Daddy! Daddy! I'm building a BEAST HOTEL! It has a pool AND a slide AND a cafe!", "I made you a special BUILDING BRICK! There's a broken bridge on BEACH ROAD. Fix it with my brick!"], 'GRACIE');
+    await giveItem('brick', 1); G.flags.gracie = 1; return;
+  }
+  if (G.flags.bridge) return sayAll(['You fixed the bridge with my brick?! I KNEW it would work! I am a builder!'], 'GRACIE');
+  await sayAll(['My BEAST HOTEL has 100 rooms now! You can sell them, Daddy! For a MILLION dollars!'], 'GRACIE');
+}
+async function cookieJoin() {
+  Snd.sfx('woof'); await say('WOOF! COOKIE the Bernedoodle spins in three happy circles!');
+  await say('Cookie wants to come along! Cookie is now following Baden!');
+  G.flags.cookie = 1; G.fol = { x: 6, y: 2, dir: 0 };
+}
+async function meredyTalk() {
+  if (!G.flags.labIntro) {
+    await sayAll(['Morning, sleepyhead! Right. Every agent in Docklandia is using BEASTS to close deals now.', 'Sign this exclusive listing agreement and you can have one of my three BEASTS. Call it a work perk.', "Don't read the fine print. It's mostly about who does the dishes.", "They're in the LOCKBOXES on the table. Pick one!"], 'QUEEN MEREDY');
+    G.flags.labIntro = 1; return sayAll(["Dad! I'm getting one too! Mum said!"], 'LENNY');
+  }
+  if (!G.flags.starter) return sayAll(['Go on, pick one from the table! Face it and press A.'], 'QUEEN MEREDY');
+  await say("MEREDY: Come here, let me patch them up, love."); Snd.sfx('heal'); healAll(); G.respawn = { map: 'town1', x: 4, y: 13 }; await wait(40);
+  await sayAll(['There. Good as new. Now go catch me some beasts. And grab milk on the way home.'], 'QUEEN MEREDY');
+}
+async function lennyTalk() {
+  if (!G.flags.starter) return sayAll(["Dad, hurry up and pick! I want the one that beats yours! Hehe."], 'LENNY');
+  const l = ['When I grow up I\'m gonna be a beast trainer AND a footy player AND a YouTuber.', 'Did you know Cookie can do a high five? I taught her. Kind of.', 'Rematch? ...After snack time.', "I'm gonna catch every beast. Even the drop bear. Especially the drop bear."];
+  await sayAll([l[Math.floor(Math.random() * l.length)]], 'LENNY');
+}
+async function starterPick(id) {
+  if (!G.flags.labIntro) return sayAll(["Oi! Hands off till you've signed the paperwork!"], 'QUEEN MEREDY');
+  if (G.flags.starter) return sayAll(["That one's spoken for. It's going to a lovely family in Point Cook."], 'QUEEN MEREDY');
+  const ov = { update() { }, draw(ctx) { box(ctx, 52, 8, 56, 56); ctx.drawImage(monSprite(id), 56, 12); } }; UI.push(ov);
+  const a = await ask(`${tr(MONS[id].name)}, the ${MONS[id].type} beast. Take this one?`);
+  removeUI(ov); if (a !== 0) return;
+  G.flags.starter = 1; G.flags.starterId = id; G.flags.rivalId = COUNTER[id];
+  giveMon(makeMon(id, 5)); Snd.sfx('catch');
+  await say(`Baden signed the agreement! Baden received ${tr(MONS[id].name)}!`);
+  await sayAll([`Then I'll take ${tr(MONS[COUNTER[id]].name)}! It beats yours! Hehe!`, "Dad! Let's battle! Loser does bath time!"], 'LENNY');
+  const lenny = { name: 'LENNY', spr: 'lenny', trainer: { team: [[COUNTER[id], 5]], money: 200, lose: ['Awww! Not fair! MUUUM! ...Fine. I\'ll do bath time.'] } };
+  const r = await battle({ trainer: lenny, noLose: true });
+  if (r !== 'win') await sayAll(["YESSS! I'm the BEST! Dad does bath time! With the GOOD bubbles!"], 'LENNY');
+  healAll();
+  await sayAll(['Lovely. Everyone gets a turn. Here, take these.'], 'QUEEN MEREDY');
+  await giveItem('lockbox', 5); autoSave();
+  await sayAll(['Wild BEASTS hide in the tall grass on BEACH ROAD, south of town. Weaken one, then throw a LOCKBOX.', "Head down to MUMINGTON. Your mum's been asking after you. And there's a GOLF GYM there."], 'QUEEN MEREDY');
+}
+async function gordonTalk() {
+  await sayAll(["THIS STEAK IS SO RAW IT'S STILL DOING CROSSFIT! ...Oh, hello Baden. Medium rare? Lovely."], 'GORDON RUMSEY');
+  if (!G.flags.gordon) { G.flags.gordon = 1; await sayAll(['Take these for the road. Now get out of my kitchen!'], 'GORDON RUMSEY'); await giveItem('meatpie', 2); }
+}
+async function vickiTalk() {
+  if (!G.party.length) return sayAll(["Baden, love! You haven't got any beasts! Go and see Meredy."], 'VICKI');
+  if (!G.flags.vicki) { G.flags.vicki = 1; await sayAll(['Baden, love! Look at you! Have you eaten? You look thin.', 'Let Mum fix up your beasts.'], 'VICKI'); }
+  else await sayAll(['Back again, love? Let me sort them out.'], 'VICKI');
+  Snd.sfx('heal'); healAll(); G.respawn = { map: 'town2', x: 4, y: 5 }; await wait(60);
+  await sayAll(['There you go! Good as new. Now give your mum a hug.'], 'VICKI');
+}
+async function roseTalk() {
+  if (!G.flags.rose) { G.flags.rose = 1; await sayAll(["Hi Uncle Baden! I'm helping Nana today! I made you FAIRY BREAD!"], 'ROSE'); return giveItem('fairybread', 3); }
+  await sayAll(['Nana says I am the best helper ever. I said I KNOW.'], 'ROSE');
+}
+async function glenTalk() {
+  if (G.flags.badge) return sayAll(["That's my boy! The HOLE-IN-ONE BADGE! I'm telling everyone at the club. Twice."], 'KING GLEN');
+  if (!G.flags.glen) {
+    G.flags.glen = 1;
+    await sayAll(["G'day son! KING GLEN, ruler of the Mumington barbie. Your mother's the real boss, though.", "Here, take these. Your old man always carries a spare."], 'KING GLEN');
+    await giveItem('panadoh', 2);
+  }
+  await sayAll(["Tip from your old man: CHIP's beasts are SPROUT types. Hit 'em with SIZZLE. Or just out-stubborn him, like you did me."], 'KING GLEN');
+}
+async function darylTalk() {
+  await sayAll(["BUNNIES WAREHOUSE sausage sizzle! Onion goes on TOP of the snag. It's Victorian law."], 'DARYL');
+  if (!G.flags.daryl) { G.flags.daryl = 1; await sayAll(["Ran out of snags, mate. Have some DIMMIES."], 'DARYL'); await giveItem('dimmy', 3); }
+}
+async function kevTalk() {
+  await sayAll([P("VELVET ROPE LOUNGE. Members only, mate. What happens behind the rope stays behind the rope... and on your credit card statement.", "VIP LOUNGE. Members only, mate. It's mostly very serious games of Uno.")], 'BIG KEV');
+  await say(tr(P("Baden pictured explaining a $400 'client lunch' to QUEEN MEREDY. He decided to keep walking.", "Baden decided he'd rather be home in time for bath time.")));
+}
+async function playPokies() {
+  if (G.money < 50) return say("The pokie wants $50. Baden's wallet says no.");
+  if ((await ask(tr(P('BEASTLY BUCKS pokie. $50 a spin. Feeling lucky, big boy?', 'BEASTLY BUCKS pokie. $50 a spin. Have a go?')))) !== 0) return;
+  G.money -= 50; Snd.sfx('blip');
+  const sym = ['CHERRY', 'LEMON', 'BELL', '7', 'BAR'], r = () => sym[Math.floor(Math.random() * 5)], roll = Math.random();
+  let a, b, c;
+  if (roll < 0.02) a = b = c = '7'; else if (roll < 0.08) a = b = c = 'BELL'; else if (roll < 0.28) { a = b = 'CHERRY'; c = 'LEMON'; }
+  else { do { a = r(); b = r(); c = r(); } while ((a === b && b === c) || (a === 'CHERRY' && b === 'CHERRY')); }
+  for (let i = 0; i < 3; i++) { Snd.sfx('shake'); await wait(8); }
+  await sayAuto(`[ ${a} | ${b} | ${c} ]`);
+  const win = a === '7' && b === '7' && c === '7' ? 1000 : a === 'BELL' && b === 'BELL' && c === 'BELL' ? 300 : a === 'CHERRY' && b === 'CHERRY' ? 50 : 0;
+  if (win) { G.money += win; Snd.sfx(win >= 300 ? 'levelup' : 'item'); return say(win >= 1000 ? `JACKPOT! Baden won $${win}! Don't tell the Queen.` : `Baden won $${win}!`); }
+  Snd.sfx('bump'); return say(['Nothing. The house always wins.', 'Nope. That $50 is now a casino chandelier.', 'Nothing. Gamble responsibly. Or like Baden: buy property.'][Math.floor(Math.random() * 3)]);
+}
+async function shazzaTalk() {
+  await say("SHAZZA: G'day Baden! Shop, or your STORAGE UNIT?");
+  const k = await choose(['SHOP', 'STORAGE', 'BYE'], { x: 88, y: 50 });
+  if (k === 0) return shop();
+  if (k === 1) return storageMenu();
+}
+async function storageMenu() { // Gen-1 style PC box
+  for (;;) {
+    const k = await choose(['DEPOSIT', 'WITHDRAW', 'BACK'], { x: 80, y: 40 });
+    if (k === 0) {
+      if (G.party.length <= 1) { await say("You can't store your last beast. Who'd close the deals?"); continue; }
+      const t = await teamScreen('use'); if (t < 0) continue;
+      const m = G.party.splice(t, 1)[0]; G.box.push(m); await say(`${monName(m)} went into the STORAGE UNIT.`);
+    } else if (k === 1) {
+      if (!G.box.length) { await say('The STORAGE UNIT is empty. Just a box of old open-home signs.'); continue; }
+      if (G.party.length >= 6) { await say('Your team is full! Deposit someone first.'); continue; }
+      const i = await choose(G.box.slice(0, 8).map(m => monName(m) + ' L' + m.lv), { x: 0, y: 0, w: 120 }); if (i < 0) continue;
+      const m = G.box.splice(i, 1)[0]; healMon(m); G.party.push(m); await say(`${monName(m)} rejoined the team!`);
+    } else return;
+  }
+}
+async function gymWin() {
+  G.badges = 1; G.flags.badge = 1; Snd.sfx('levelup'); await badgeScreen(); await say('Baden received the HOLE-IN-ONE BADGE!');
+  await sayAll(["That's all the golf for now, mate. Word is new towns are being built past the bay..."], 'CHIP');
+  Snd.sfx('catch');
+  autoSave();
+  await say("*** CONGRATULATIONS! You've finished GET 'EM: BADEN v1! More towns, beasts and badges coming soon. Keep catching! ***");
+  G.flags.v1done = 1; autoSave();
+}
+
+function badgeScreen() {
+  let t = 0;
+  return screen({
+    update(sc) { t++; if (t > 40 && (Input.take('a') || Input.take('b'))) sc.close(); },
+    draw(ctx) {
+      ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, 160, 144);
+      for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2 + t / 60; ctx.fillStyle = PAL[1]; ctx.beginPath(); ctx.moveTo(80, 62); ctx.arc(80, 62, 120, a, a + 0.22); ctx.fill(); }
+      text(ctx, 'NEW BADGE!', 80 - 30 * 2 / 2 * 2, 6, 3, 2);
+      // badge: golf ball on a ribbon with a flag
+      ctx.fillStyle = PAL[2]; ctx.fillRect(68, 86, 8, 18); ctx.fillRect(84, 86, 8, 18);
+      ctx.fillStyle = PAL[3]; ctx.beginPath(); ctx.arc(80, 62, 27, 0, 7); ctx.fill();
+      ctx.fillStyle = PAL[2]; ctx.beginPath(); ctx.arc(80, 62, 24, 0, 7); ctx.fill();
+      ctx.fillStyle = PAL[0]; ctx.beginPath(); ctx.arc(80, 62, 19, 0, 7); ctx.fill();
+      ctx.fillStyle = PAL[1]; for (let y = -12; y <= 12; y += 6) for (let x = -12; x <= 12; x += 6) if (x * x + y * y < 260) ctx.fillRect(80 + x + (y / 6 % 2 ? 3 : 0) - 1, 62 + y - 1, 2, 2);
+      ctx.fillStyle = PAL[3]; ctx.fillRect(84, 34, 2, 22); ctx.fillRect(86, 34, 12, 7);
+      if ((t >> 3) % 4 === 0) { ctx.fillStyle = PAL[0]; ctx.fillRect(66, 50, 3, 3); ctx.fillRect(95, 72, 2, 2); }
+      text(ctx, 'HOLE-IN-ONE BADGE', 80 - 17 * 3, 112);
+      text(ctx, 'BADEN  BADGES:' + G.badges, 80 - 15 * 3, 124, 2);
+      if (t > 40 && (t >> 4) % 2) text(ctx, '~', 146, 134);
+    },
+  });
+}
+
+// ---- 99_main.js ----
+// ===== Boot, main loop, scenes, controls =====
+const cv = document.getElementById('screen'), ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+let introSpr = null, titleMon = 0;
+
+function drawTitle(c) {
+  c.fillStyle = PAL[0]; c.fillRect(0, 0, SW, SH);
+  drawLogo(c, 4, 4);
+  const ids = Object.keys(MONS); const id = ids[Math.floor(frameNo / 150) % ids.length];
+  c.fillStyle = PAL[1]; c.beginPath(); c.ellipse(80, 106, 30, 6, 0, 0, 7); c.fill();
+  c.drawImage(monSprite(id), 56, 60);
+  if (!UI.some(w => w instanceof Menu || w instanceof TextBox) && (frameNo >> 5) % 2) text(c, 'PRESS START', 47, 116);
+  text(c, '2026 LUCAS FAMILY GAMES', 11, 132, 2);
+}
+function drawIntro(c) {
+  c.fillStyle = PAL[0]; c.fillRect(0, 0, SW, SH);
+  if (!introSpr) return;
+  if (introSpr.mon) c.drawImage(monSprite(introSpr.mon), 56, 24);
+  else c.drawImage(charFrames(introSpr.chr)[0][0], 0, 0, 16, 16, 56, 24, 48, 48);
+}
+function render() {
+  if (scene === 'title') drawTitle(ctx);
+  else if (scene === 'intro') drawIntro(ctx);
+  else if (scene === 'world') drawWorld(ctx);
+  else if (scene === 'battle' && B) drawBattle(ctx);
+  else { ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH); }
+  for (const w of UI) w.draw(ctx);
+  if (fade) { ctx.globalAlpha = fade / 4; ctx.fillStyle = PAL[3]; ctx.fillRect(0, 0, SW, SH); ctx.globalAlpha = 1; }
+  if (flashWhite) { ctx.fillStyle = PAL[0]; ctx.fillRect(0, 0, SW, SH); }
+}
+function update() {
+  frameNo++; tickWaiters();
+  if (G && (scene === 'world' || scene === 'battle')) G.time++;
+  if (G && scene === 'world' && !busy && !UI.length && frameNo - lastAuto > 60 * 45) autoSave();
+  if (UI.length) UI[UI.length - 1].update();
+  if (scene === 'world') worldUpdate();
+  if (scene === 'battle') battleUpdate();
+  Input.endFrame();
+}
+let lastT = 0, acc = 0;
+function frame(t) {
+  requestAnimationFrame(frame);
+  if (!lastT) lastT = t; acc += Math.min(100, t - lastT); lastT = t;
+  let n = 0; while (acc >= 1000 / 60 && n < 5) { update(); acc -= 1000 / 60; n++; }
+  if (n === 5) acc = 0;
+  render();
+}
+
+async function titleFlow() {
+  scene = 'title'; Snd.music('title'); fade = 0;
+  for (;;) {
+    await screen({ draw() { }, update(s) { if (Input.take('a') || Input.take('start')) { Snd.sfx('select'); s.close(); } } });
+    const items = hasSave() ? ['CONTINUE', 'NEW GAME', 'OPTIONS'] : ['NEW GAME', 'OPTIONS'];
+    const i = await choose(items, { x: 36, y: 74, w: 88 });
+    const pick = items[i];
+    if (pick === 'CONTINUE' && loadGame()) { await fadeOut(); return startWorld(); }
+    if (pick === 'NEW GAME') {
+      if (hasSave() && (await ask('Start a new game? Your old save gets replaced next time you save.')) !== 0) continue;
+      await fadeOut(); return intro();
+    }
+    if (pick === 'OPTIONS') await optionsMenu();
+  }
+}
+async function intro() {
+  newGame(); scene = 'intro'; introSpr = { chr: 'meredy' }; Snd.music('heal'); await fadeIn();
+  await sayAll(["Hello there! Welcome to the world of GET 'EM: BADEN!", "I'm QUEEN MEREDY. People call me the BEAST PROFESSOR. You call me 'darl'."]);
+  introSpr = { mon: 'cookiedoo' };
+  await sayAll(['This world is crawling with creatures called BEASTS!', 'Some people keep them as pets. Others use them to battle.', 'And some just want belly rubs.']);
+  introSpr = { chr: 'baden' };
+  await sayAll(["And this handsome bloke is you: BADEN LUCAS, Director of LUCAS REAL BEASTATE. Docklands' sharpest suit."]);
+  introSpr = { chr: 'lenny' };
+  await sayAll(["And this cheeky little legend is our son, LENNY. He reckons he's the best beast trainer in DOCKLANDIA."]);
+  introSpr = { chr: 'baden' };
+  await sayAll(['BADEN! Your very own BEAST adventure is about to begin! Pop into my LAB when you are up. I have a little... work perk for you.']);
+  await fadeOut(); introSpr = null; startWorld(true);
+}
+async function startWorld(fresh) {
+  scene = 'world'; W.moving = false; Snd.music(curMap().music); await fadeIn();
+  if (fresh) await say('Baden woke up in his DOCKLANDIA apartment. Tip: press START for the menu. Talk to people with A.');
+}
+
+// ---- Controls ----
+const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right', z: 'a', j: 'a', ' ': 'a', x: 'b', k: 'b', Backspace: 'b', Enter: 'start', Escape: 'start', Shift: 'select' };
+addEventListener('keydown', e => { const k = KEYMAP[e.key] || KEYMAP[e.key.toLowerCase()]; if (e.key === 'm' || e.key === 'M') { toggleMute(); return; } if (k) { e.preventDefault(); if (!e.repeat) Input.press(k); } });
+addEventListener('keyup', e => { const k = KEYMAP[e.key] || KEYMAP[e.key.toLowerCase()]; if (k) Input.release(k); });
+function toggleMute() { Snd.init(); Snd.setMute(!Settings.mute); syncMuteBtn(); }
+function syncMuteBtn() { const b = document.getElementById('mute'); if (b) b.textContent = Settings.mute ? 'SOUND OFF' : 'SOUND ON'; }
+
+function bindControls() {
+  const dpad = document.getElementById('dpad'); let cur = null;
+  const setDir = d => { for (const k of DIRS) { if (k === d) { if (!Input.held[k]) Input.press(k); } else Input.release(k); } dpad.dataset.dir = d || ''; };
+  const upd = e => { const r = dpad.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    if (Math.hypot(dx, dy) < r.width * 0.12) return setDir(null); setDir(Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down')); };
+  dpad.addEventListener('pointerdown', e => { e.preventDefault(); cur = e.pointerId; try { dpad.setPointerCapture(e.pointerId); } catch (_) { } upd(e); });
+  dpad.addEventListener('pointermove', e => { if (e.pointerId === cur) upd(e); });
+  const end = e => { if (e.pointerId === cur) { cur = null; setDir(null); } };
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => dpad.addEventListener(ev, end));
+  document.querySelectorAll('[data-k]').forEach(b => {
+    const k = b.dataset.k;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch (_) { } b.classList.add('on'); if (k === 'mute') toggleMute(); else Input.press(k); });
+    const up = () => { b.classList.remove('on'); if (k !== 'mute') Input.release(k); };
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => b.addEventListener(ev, up));
+  });
+  // iOS Safari: no zoom, no scroll/bounce, no callouts; unlock audio on first gesture
+  const unlock = () => Snd.init();
+  ['touchend', 'click', 'pointerdown', 'keydown'].forEach(ev => addEventListener(ev, unlock, { passive: true }));
+  document.addEventListener('touchstart', e => { if (e.touches.length > 1 || e.target.closest('#app')) e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (!e.target.closest('#io')) e.preventDefault(); }, { passive: false });
+  ['gesturestart', 'gesturechange', 'dblclick', 'contextmenu'].forEach(ev => document.addEventListener(ev, e => e.preventDefault()));
+  document.addEventListener('visibilitychange', () => { if (!Snd.ctx) return; document.hidden ? Snd.ctx.suspend() : Snd.ctx.resume(); });
+  addEventListener('blur', () => { for (const k in Input.held) Input.held[k] = false; });
+  const saveNow = () => { if (G && (scene === 'world' || scene === 'battle')) saveGame(); };
+  addEventListener('pagehide', saveNow); document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
+}
+function layout() {
+  const wrap = document.getElementById('screenWrap'), app = document.getElementById('app');
+  const aw = Math.min(app.clientWidth, 520) - 48, ah = app.clientHeight * 0.55;
+  let s = Math.min(aw / SW, ah / SH);
+  cv.style.width = Math.floor(SW * s) + 'px'; cv.style.height = Math.floor(SH * s) + 'px';
+}
+
+function boot() {
+  loadSettings(); buildTiles(); bindControls(); syncMuteBtn(); layout();
+  addEventListener('resize', layout); addEventListener('orientationchange', () => setTimeout(layout, 200));
+  requestAnimationFrame(frame); titleFlow();
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW', e));
+}
+// test/debug hooks (used by the automated tests)
+window.__RB = { exportCode, importCode, loadGame, readBackups, get G() { return G; }, get scene() { return scene; }, get UI() { return UI; }, get B() { return B; }, Input, MAPS, MONS, Settings, tr, P, saveGame, loadGame, drawIcon, run, battle, makeMon, warp, W };
+boot();
+
+// ---- sw.template.js ----
+// Service worker: precache everything so the game runs fully offline after one visit.
+const CACHE = 'getem-__VERSION__';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
+self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())); });
+self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener('fetch', e => {
+  const req = e.request; if (req.method !== 'GET') return;
+  const url = new URL(req.url); if (url.origin !== location.origin) return;
+  if (req.mode === 'navigate') { // network first for the page (picks up updates), fall back to cache offline
+    e.respondWith(fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', cp)); return r; }).catch(() => caches.match('./index.html', { ignoreSearch: true })));
+    return;
+  }
+  e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req)));
+});
+
+</script>
+</body>
+</html>
