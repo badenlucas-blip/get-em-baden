@@ -1,0 +1,82 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check static site
+        run: |
+          set -eu
+          test -f index.html
+          test -f sw.js
+          test -f manifest.webmanifest
+          test -f .nojekyll
+          test -f icons/apple-touch-icon.png
+          test -f icons/icon-192.png
+          test -f icons/icon-512.png
+          test -f icons/icon-maskable-512.png
+          # Asset URLs must stay relative so the site works at /get-em-baden/.
+          if grep -Eq '(href|src)="/' index.html; then
+            echo "index.html has a root-absolute asset URL"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          sw = Path("sw.js").read_text()
+          assets = re.findall(r"['\"](\./[^'\"]+)['\"]", sw)
+          needed = [
+              "./index.html",
+              "./manifest.webmanifest",
+              "./sw.js",
+              "./icons/apple-touch-icon.png",
+              "./icons/icon-192.png",
+              "./icons/icon-512.png",
+              "./icons/icon-maskable-512.png",
+          ]
+          missing = [n for n in needed if n not in assets]
+          if missing:
+              raise SystemExit("service worker is missing " + ", ".join(missing))
+          for rel in needed:
+              path = Path(rel[2:])
+              if not path.is_file():
+                  raise SystemExit("missing file " + str(path))
+          print("service worker lists", len(set(assets)), "relative assets")
+          PY
+
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
